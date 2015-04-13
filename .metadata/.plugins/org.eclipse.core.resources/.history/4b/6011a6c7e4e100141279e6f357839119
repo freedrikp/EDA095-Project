@@ -261,6 +261,7 @@ public class Server extends JFrame implements ActionListener {
             //parse request line and extract the requestType:
             String RequestLine = rtspBufferedReader.readLine();
             if(RequestLine == null){
+            	System.out.println("is null");
             	return -1;
             }
             if(RequestLine.isEmpty()){

@@ -144,12 +144,15 @@ public class Server extends JFrame implements ActionListener {
             if (requestType == OPTIONS) {
                 done = true;
 
+                //update RTSP state
+                state = READY;
+                System.out.println("New RTSP state: READY");
+
                 //Send response
                 theServer.sendOptions();
 
             }
         }
-        done = false;
         while (!done) {
 
             requestType = theServer.parseRTSPRequest(); //blocking
@@ -260,11 +263,7 @@ public class Server extends JFrame implements ActionListener {
         try {
             //parse request line and extract the requestType:
             String RequestLine = rtspBufferedReader.readLine();
-            if(RequestLine == null){
-            	return -1;
-            }
-            if(RequestLine.isEmpty()){
-            	System.out.println("is empty");
+            if(RequestLine == null || RequestLine.isEmpty()){
             	return -1;
             }
             System.out.println("RTSP Server - Received from Client:");
@@ -297,6 +296,7 @@ public class Server extends JFrame implements ActionListener {
             tokens = new StringTokenizer(seqNumLine);
             tokens.nextToken();
             rtspSeqNb = Integer.parseInt(tokens.nextToken());
+
             //get lastLine
             String lastLine = rtspBufferedReader.readLine();
             System.out.println(lastLine);
@@ -357,7 +357,7 @@ public class Server extends JFrame implements ActionListener {
         try {
             rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
             rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
-            rtspBufferedWriter.write("Public: SETUP, TEARDOWN, PLAY, PAUSE" + CRLF + CRLF);
+            rtspBufferedWriter.write("Public: SETUP, TEARDOWN, PLAY, PAUSE" + CRLF);
             rtspBufferedWriter.flush();
             System.out.println("RTSP Server - Sent options to Client.");
         } catch (IOException ex) {
