@@ -18,7 +18,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.Timer;
@@ -54,6 +56,8 @@ public class Server extends JFrame implements ActionListener {
     final static int PLAY = 4;
     final static int PAUSE = 5;
     final static int TEARDOWN = 6;
+    final static int OPTIONS = 7;
+    final static int UNKNOWN = 9;
     static int state; //RTSP Server state == INIT or READY or PLAY
     Socket rtspSocket; //socket used to send/receive RTSP messages
     //input and output stream filters
@@ -186,6 +190,9 @@ public class Server extends JFrame implements ActionListener {
 
                 System.exit(0);
             }
+            else if (requestType == OPTIONS){
+            	theServer.sendOptions();
+            }
         }
     }
 
@@ -241,6 +248,9 @@ public class Server extends JFrame implements ActionListener {
         try {
             //parse request line and extract the requestType:
             String RequestLine = rtspBufferedReader.readLine();
+            if(RequestLine == null || RequestLine.isEmpty()){
+            	return -1;
+            }
             System.out.println("RTSP Server - Received from Client:");
             System.out.println(RequestLine);
 
@@ -256,6 +266,9 @@ public class Server extends JFrame implements ActionListener {
                 requestType = PAUSE;
             } else if (requestTypeString.compareTo("TEARDOWN") == 0) {
                 requestType = TEARDOWN;
+            }
+              else if (requestTypeString.compareTo("OPTIONS") == 0) {
+                requestType = OPTIONS;
             }
             if (requestType == SETUP) {
                 //extract videoFileName from RequestLine
@@ -291,6 +304,8 @@ public class Server extends JFrame implements ActionListener {
             System.out.println("Exception caught: " + ex);
             ex.printStackTrace();
             System.exit(0);
+        } catch (NoSuchElementException ex) {
+            return -1;
         }
         return (requestType);
     }
@@ -303,6 +318,19 @@ public class Server extends JFrame implements ActionListener {
             rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
             rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
             rtspBufferedWriter.write("Session: " + RTSP_ID + CRLF);
+            rtspBufferedWriter.flush();
+            //System.out.println("RTSP Server - Sent response to Client.");
+        } catch (IOException ex) {
+            System.out.println("Exception caught: " + ex);
+            System.exit(0);
+        }
+    }
+    
+    private void sendOptions() {
+        try {
+            rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
+            rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
+            rtspBufferedWriter.write("Public: SETUP, TEARDOWN, PLAY, PAUSE");
             rtspBufferedWriter.flush();
             //System.out.println("RTSP Server - Sent response to Client.");
         } catch (IOException ex) {
