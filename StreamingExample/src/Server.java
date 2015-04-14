@@ -189,15 +189,17 @@ public class Server extends JFrame implements ActionListener {
                 //update RTSP state
                 state = READY;
                 System.out.println("New RTSP state: READY");
-
+                
+                //init RTP socket BEFORE the response so we know what port to use. this was not good example code.
+                theServer.rtpSocket = new DatagramSocket();
+                
                 //Send response
-                theServer.sendRTSPResponse();
+                theServer.sendSETUPResponse();
 
                 //init the VideoStream object:
                 theServer.video = new VideoStream(videoFileName);
 
-                //init RTP socket
-                theServer.rtpSocket = new DatagramSocket();
+                
             }
             else if ((requestType == PLAY) && (state == READY)) {
                 //send back response
@@ -317,7 +319,10 @@ public class Server extends JFrame implements ActionListener {
             
             if (requestType == SETUP) {
                 //extract videoFileName from RequestLine
-                videoFileName = tokens.nextToken();
+            	
+            	//!!NOT WORKING BUT SHOULD BE IMPLEMENTED!!
+               // videoFileName = tokens.nextToken();
+            	videoFileName = "media/movie.Mjpeg";
             }
 
             //parse the seqNumLine and extract CSeq field
@@ -352,6 +357,12 @@ public class Server extends JFrame implements ActionListener {
 //                rtpDestPort = Integer.parseInt(tokens.nextToken());
             } else if(requestType == DESCRIBE){
             	//Describe has one more line than usual
+            	String line = rtspBufferedReader.readLine();
+                System.out.println(line);
+            }	else if(requestType == PLAY){
+            	//Play has two more lines
+            	String sess = rtspBufferedReader.readLine();
+            	System.out.println(sess);
             	String line = rtspBufferedReader.readLine();
                 System.out.println(line);
             }
@@ -398,6 +409,21 @@ public class Server extends JFrame implements ActionListener {
         }
     }
     
+    private void sendSETUPResponse() {
+    	String s = "Transport: RTP/AVP;unicast;client_port=" + rtpDestPort + ";server_port=" + rtpSocket.getLocalPort();
+        try {
+            rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
+            rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
+            rtspBufferedWriter.write(s + CRLF);
+            rtspBufferedWriter.write("Session: " + RTSP_ID + CRLF + CRLF);
+            rtspBufferedWriter.flush();
+            System.out.println("RTSP Server - Sent response to Client.");
+        } catch (IOException ex) {
+            System.out.println("Exception caught: " + ex);
+            System.exit(0);
+        }
+    }
+    
     private void sendOptions() {
         try {
             rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
@@ -421,7 +447,7 @@ public class Server extends JFrame implements ActionListener {
     	String desc = "v=0" + CRLF;
     	//session identifier: <username> <sess-id> <sess-version> <nettype> <addrtype> <unicast-address>
     	//- because no username, made up sess-id and version. IN=internet
-    	desc += "o=- 123456789 1 IN IP4 192.168.0.20" + CRLF;
+    	desc += "o=- 123456789 1 IN IP4 127.0.0.1" + CRLF;
     	//session name
     	desc += "s=projekt" + CRLF;
     	//startime, endtime. hopefully this should last forever
@@ -434,7 +460,7 @@ public class Server extends JFrame implements ActionListener {
             rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
             rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
             rtspBufferedWriter.write("Content-Type: application/sdp" + CRLF);
-            rtspBufferedWriter.write("Content-Base: rtsp://192.168.0.20:6666" + CRLF);
+            rtspBufferedWriter.write("Content-Base: rtsp://127.0.0.1:6666" + CRLF);
             rtspBufferedWriter.write("Date: " + date + CRLF);
             rtspBufferedWriter.write("Content-Length: " + cLength + CRLF + CRLF);
             rtspBufferedWriter.write(desc);
