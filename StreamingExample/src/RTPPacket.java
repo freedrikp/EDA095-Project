@@ -43,7 +43,9 @@ public class RTPPacket {
         header = new byte[HEADER_SIZE];
 
         //fill the header array of byte with RTP header fields
-
+        //pseudocode totally forgot the beginning of the header even though they declared version etc. up there...
+        //should be 10000000 if I understand it correctly, so -128 because java uses signed bytes for whatever reason
+        header[0] = -128;
         //payload type
         header[1] = 26;
 
