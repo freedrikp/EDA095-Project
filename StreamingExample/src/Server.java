@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.SimpleTimeZone;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -329,13 +331,25 @@ public class Server extends JFrame implements ActionListener {
             System.out.println(lastLine);
 
             if (requestType == SETUP) {
+            	String portInfoLine = rtspBufferedReader.readLine();
+                System.out.println(portInfoLine);
+            	Pattern portPattern = Pattern.compile("client_port=(\\d+)");
+            	Matcher portMatcher = portPattern.matcher(portInfoLine);
+            	if(portMatcher.find()){
+            		String port = portMatcher.group(1);
+            		rtpDestPort = Integer.parseInt(port);
+            	}else{
+            		System.out.println("No dest port found");
+            	}
+            	
+            	System.out.println("found dest port: " + rtpDestPort);
                 //extract rtpDestPort from lastLine
-                tokens = new StringTokenizer(lastLine);
-                for (int i = 0; i < 3; i++) {
-                    tokens.nextToken(); //skip unused stuff
-
-                }
-                rtpDestPort = Integer.parseInt(tokens.nextToken());
+//                tokens = new StringTokenizer(lastLine);
+//                for (int i = 0; i < 3; i++) {
+//                    tokens.nextToken(); //skip unused stuff
+//
+//                }
+//                rtpDestPort = Integer.parseInt(tokens.nextToken());
             } else if(requestType == DESCRIBE){
             	//Describe has one more line than usual
             	String line = rtspBufferedReader.readLine();
