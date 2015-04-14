@@ -18,7 +18,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.NoSuchElementException;
+import java.util.SimpleTimeZone;
 import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
@@ -57,6 +60,7 @@ public class Server extends JFrame implements ActionListener {
     final static int PAUSE = 5;
     final static int TEARDOWN = 6;
     final static int OPTIONS = 7;
+    final static int DESCRIBE = 8;
     final static int UNKNOWN = 9;
     static int state; //RTSP Server state == INIT or READY or PLAY
     Socket rtspSocket; //socket used to send/receive RTSP messages
@@ -136,26 +140,48 @@ public class Server extends JFrame implements ActionListener {
         int requestType;
         boolean done = false;
         
-        while (!done) {
+//        while (!done) {
+//
+//            requestType = theServer.parseRTSPRequest(); //blocking
+//
+//
+//            if (requestType == OPTIONS) {
+//                done = true;
+//
+//                //Send response
+//                theServer.sendOptions();
+//
+//            }
+//        }
+//        done = false;
+//        while (!done) {
+//
+//            requestType = theServer.parseRTSPRequest(); //blocking
+//
+//
+//            if (requestType == SETUP) {
+//                done = true;
+//
+//                //update RTSP state
+//                state = READY;
+//                System.out.println("New RTSP state: READY");
+//
+//                //Send response
+//                theServer.sendRTSPResponse();
+//
+//                //init the VideoStream object:
+//                theServer.video = new VideoStream(videoFileName);
+//
+//                //init RTP socket
+//                theServer.rtpSocket = new DatagramSocket();
+//            }
+//        }
 
+        //loop to handle RTSP requests
+        while (true) {
+            //parse the request
             requestType = theServer.parseRTSPRequest(); //blocking
-
-
-            if (requestType == OPTIONS) {
-                done = true;
-
-                //Send response
-                theServer.sendOptions();
-
-            }
-        }
-        done = false;
-        while (!done) {
-
-            requestType = theServer.parseRTSPRequest(); //blocking
-
-
-            if (requestType == SETUP) {
+            if (requestType == SETUP && !done) {
                 done = true;
 
                 //update RTSP state
@@ -171,14 +197,7 @@ public class Server extends JFrame implements ActionListener {
                 //init RTP socket
                 theServer.rtpSocket = new DatagramSocket();
             }
-        }
-
-        //loop to handle RTSP requests
-        while (true) {
-            //parse the request
-            requestType = theServer.parseRTSPRequest(); //blocking
-
-            if ((requestType == PLAY) && (state == READY)) {
+            else if ((requestType == PLAY) && (state == READY)) {
                 //send back response
                 theServer.sendRTSPResponse();
                 //start timer
@@ -204,6 +223,12 @@ public class Server extends JFrame implements ActionListener {
                 theServer.rtpSocket.close();
 
                 System.exit(0);
+            } else if (requestType == OPTIONS) {
+                //Send response
+                theServer.sendOptions();
+
+            } else if (requestType == DESCRIBE){
+            	theServer.sendDescription();
             }
         }
     }
@@ -282,10 +307,12 @@ public class Server extends JFrame implements ActionListener {
                 requestType = PAUSE;
             } else if (requestTypeString.compareTo("TEARDOWN") == 0) {
                 requestType = TEARDOWN;
-            }
-              else if (requestTypeString.compareTo("OPTIONS") == 0) {
+            } else if (requestTypeString.compareTo("OPTIONS") == 0) {
                 requestType = OPTIONS;
+            } else if (requestTypeString.compareTo("DESCRIBE") == 0) {
+                requestType = DESCRIBE;
             }
+            
             if (requestType == SETUP) {
                 //extract videoFileName from RequestLine
                 videoFileName = tokens.nextToken();
@@ -309,6 +336,10 @@ public class Server extends JFrame implements ActionListener {
 
                 }
                 rtpDestPort = Integer.parseInt(tokens.nextToken());
+            } else if(requestType == DESCRIBE){
+            	//Describe has one more line than usual
+            	String line = rtspBufferedReader.readLine();
+                System.out.println(line);
             }
             //else lastLine will be the SessionId line ... do not check for now.
         } catch (IOException ex) {
@@ -344,7 +375,7 @@ public class Server extends JFrame implements ActionListener {
         try {
             rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
             rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
-            rtspBufferedWriter.write("Session: " + RTSP_ID + CRLF);
+            rtspBufferedWriter.write("Session: " + RTSP_ID + CRLF + CRLF);
             rtspBufferedWriter.flush();
             System.out.println("RTSP Server - Sent response to Client.");
         } catch (IOException ex) {
@@ -357,7 +388,42 @@ public class Server extends JFrame implements ActionListener {
         try {
             rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
             rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
-            rtspBufferedWriter.write("Public: SETUP, TEARDOWN, PLAY, PAUSE" + CRLF + CRLF);
+            rtspBufferedWriter.write("Public: DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE" + CRLF + CRLF);
+            rtspBufferedWriter.flush();
+            System.out.println("RTSP Server - Sent options to Client.");
+        } catch (IOException ex) {
+            System.out.println("Exception caught: " + ex);
+            System.exit(0);
+        }
+    }
+    private void sendDescription() {
+    	SimpleDateFormat sdf = new SimpleDateFormat();
+    	sdf.setTimeZone(new SimpleTimeZone(0, "GMT"));
+    	sdf.applyPattern("dd MMM yyyy HH:mm:ss z");
+    	Date now = new Date();
+    	String date = sdf.format(now);
+    	System.out.println("sending description");
+    	//version
+    	String desc = "v=0" + CRLF;
+    	//session identifier: <username> <sess-id> <sess-version> <nettype> <addrtype> <unicast-address>
+    	//- because no username, made up sess-id and version. IN=internet
+    	desc += "o=- 123456789 1 IN IP4 192.168.0.20" + CRLF;
+    	//session name
+    	desc += "s=projekt" + CRLF;
+    	//startime, endtime. hopefully this should last forever
+    	desc += "t=0 0" + CRLF;
+    	//<media> <port> <proto> <fmt>
+    	//if rtp then <fmt> must be set to payload type number: http://en.wikipedia.org/wiki/RTP_audio_video_profile
+    	desc += "m=video 0 RTP/AVP 26" + CRLF;
+    	String cLength = Integer.toString(desc.length());
+        try {
+            rtspBufferedWriter.write("RTSP/1.0 200 OK" + CRLF);
+            rtspBufferedWriter.write("CSeq: " + rtspSeqNb + CRLF);
+            rtspBufferedWriter.write("Content-Type: application/sdp" + CRLF);
+            rtspBufferedWriter.write("Content-Base: rtsp://192.168.0.20:6666" + CRLF);
+            rtspBufferedWriter.write("Date: " + date + CRLF);
+            rtspBufferedWriter.write("Content-Length: " + cLength + CRLF + CRLF);
+            rtspBufferedWriter.write(desc);
             rtspBufferedWriter.flush();
             System.out.println("RTSP Server - Sent options to Client.");
         } catch (IOException ex) {
