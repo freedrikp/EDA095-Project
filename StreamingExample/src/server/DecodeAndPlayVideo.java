@@ -58,7 +58,7 @@ public class DecodeAndPlayVideo {
 		// " as the first argument");
 
 		// String filename = args[0];
-		String filename = "media/mdl.mp4";
+		String filename = "media/sw.mp4";
 		// Let's make sure that we can actually convert video pixel formats.
 		if (!IVideoResampler
 				.isSupported(IVideoResampler.Feature.FEATURE_COLORSPACECONVERSION))
