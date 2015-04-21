@@ -9,10 +9,9 @@ public class ServerMain {
 	public static void main(String[] args) {
 		System.out.println("Server start");
 		
-		IMediaReader reader = ToolFactory.makeReader("myinputfile.flv");
+		IMediaReader reader = ToolFactory.makeReader("media/sw.mp4");
 		  reader.addListener(ToolFactory.makeViewer());
-		  while(reader.readPacket() == null)
-		    ;
+		  while(reader.readPacket() == null);
 	}
 
 }
