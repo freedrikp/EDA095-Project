@@ -26,7 +26,7 @@ public class ServerListener extends MediaListenerAdapter {
 		BufferedImage bi = ConverterFactory.createConverter(
 				ConverterFactory.XUGGLER_BGR_24, event.getMediaData()).toImage(
 				event.getMediaData());
-		System.out.println(event.getMediaData());
+		//System.out.println(event.getMediaData());
 
 		monitor.addImage(bi);
 	}
