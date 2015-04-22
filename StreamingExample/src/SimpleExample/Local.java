@@ -1,3 +1,5 @@
+package SimpleExample;
+
 
 
 import java.awt.image.BufferedImage;
@@ -40,7 +42,7 @@ class Listener extends MediaListenerAdapter{
 	
 }
 
-public class SimpleExample {
+public class Local {
 
 	
 	

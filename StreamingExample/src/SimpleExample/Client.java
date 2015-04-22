@@ -1,3 +1,5 @@
+package SimpleExample;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.Socket;
@@ -7,14 +9,13 @@ import javax.imageio.ImageIO;
 
 import com.xuggle.xuggler.demos.VideoImage;
 
-
-public class SimpleExampleClient {
+public class Client {
 
 	public static void main(String[] args) {
 		try {
 			Socket socket = new Socket("localhost", 7373);
 			VideoImage vi = new VideoImage();
-			while (!socket.isClosed()){
+			while (!socket.isClosed()) {
 				BufferedImage bi = ImageIO.read(socket.getInputStream());
 				vi.setImage(bi);
 			}
