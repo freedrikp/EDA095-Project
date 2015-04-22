@@ -17,7 +17,7 @@ public class ImageBuffer {
 		notifyAll();
 	}
 
-	public synchronized BufferedImage sendNextImage() {
+	public synchronized BufferedImage getNextImage() {
 		while (images.isEmpty()) {
 			try {
 				wait();

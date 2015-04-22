@@ -23,7 +23,7 @@ public class ImageSender extends Thread {
 		try {
 			dos = new DataOutputStream(socket.getOutputStream());
 			while (!monitor.finished() || !monitor.hasMore()) {
-				BufferedImage image = monitor.sendNextImage();
+				BufferedImage image = monitor.getNextImage();
 				byte[] bytes = createBytesFromImage(image);
 				if (bytes != null){
 						dos.writeInt(bytes.length);
