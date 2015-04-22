@@ -20,6 +20,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
+import java.awt.FlowLayout;
 
 public class ClientGui {
 
@@ -75,11 +76,12 @@ public class ClientGui {
 		JPanel buttonPanel = new JPanel();
 		MainPanel.add(buttonPanel, BorderLayout.SOUTH);
 		buttonPanel.setBackground(Color.GRAY);
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel actionPanel = new JPanel();
 		actionPanel.setBackground(Color.GRAY);
 		buttonPanel.add(actionPanel);
+		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JButton btnPlay = new JButton("Play");
 		actionPanel.add(btnPlay);
@@ -97,13 +99,18 @@ public class ClientGui {
 			}
 		});
 		
+		JPanel exitPanel = new JPanel();
+		exitPanel.setBackground(Color.GRAY);
+		buttonPanel.add(exitPanel, BorderLayout.EAST);
+		
 		JButton btnExit = new JButton("Exit");
+		exitPanel.add(btnExit);
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Exit pressed");
+				System.exit(0);
 			}
 		});
-		buttonPanel.add(btnExit);
 		
 		JPanel SelectPanel = new JPanel();
 		SelectPanel.setBackground(Color.DARK_GRAY);
