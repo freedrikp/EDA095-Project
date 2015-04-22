@@ -45,12 +45,6 @@ public class ClientGui {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.getContentPane().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.print("Klick paus kanske? ");
-			}
-		});
 		
 		frame.getContentPane().setBackground(Color.DARK_GRAY);
 		frame.setAlwaysOnTop(true);
@@ -68,6 +62,12 @@ public class ClientGui {
 		MainPanel.setLayout(new BorderLayout(0, 0));
 		
 		JLabel movieScreen = new JLabel();
+		movieScreen.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("Musklick paus kanske?");
+			}
+		});
 		MainPanel.add(movieScreen, BorderLayout.CENTER);
 		movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
 		this.label = movieScreen;
