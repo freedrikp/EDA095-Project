@@ -23,9 +23,8 @@ public class Server {
 			reader.addListener(new ServerListener(monitor));
 			while (reader.readPacket() == null)
 				;
-			monitor.closeIt();
+//			monitor.closeIt();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

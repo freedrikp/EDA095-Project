@@ -125,7 +125,7 @@ public class ClientGui {
 		SelectPanel.setLayout(new BorderLayout(0, 0));
 		JList list = new JList(listData);
 		list.setBorder(UIManager.getBorder("List.focusCellHighlightBorder"));
-		list.setBackground(Color.GRAY);
+		list.setBackground(Color.DARK_GRAY);
 		list.setForeground(Color.WHITE);
 		SelectPanel.add(list);
 		
