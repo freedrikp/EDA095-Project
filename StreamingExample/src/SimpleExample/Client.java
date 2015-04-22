@@ -13,6 +13,7 @@ import com.xuggle.xuggler.demos.VideoImage;
 
 public class Client {
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		try {
 			Socket socket = new Socket("localhost", 7373);
@@ -25,6 +26,11 @@ public class Client {
 				int read = 0;
 				while ((read = dis.read(bytes, bytesRead, length-bytesRead)) > 0){
 					bytesRead += read;
+				}
+				try {
+					Thread.sleep(30);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 				vi.setImage(createImageFromBytes(bytes));
 			}

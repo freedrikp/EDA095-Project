@@ -4,36 +4,38 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.net.Socket;
 
 import javax.imageio.ImageIO;
 
 public class ImageSender extends Thread {
 	private ImageBuffer monitor;
-	private OutputStream out;
+	private Socket socket;
 
-	public ImageSender(ImageBuffer monitor, OutputStream out) {
+	public ImageSender(ImageBuffer monitor, Socket socket) {
 		super();
 		this.monitor = monitor;
-		this.out = out;
+		this.socket = socket;
 	}
 
 	public void run() {
-		DataOutputStream dos = new DataOutputStream(out);
-		while (true) {
-			BufferedImage image = monitor.sendNextImage();
-			byte[] bytes = createBytesFromImage(image);
-			if (bytes != null){
-				try {
-					dos.writeInt(bytes.length);
-					dos.write(bytes);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		DataOutputStream dos;
+		try {
+			dos = new DataOutputStream(socket.getOutputStream());
+			while (!monitor.finished() || !monitor.hasMore()) {
+				BufferedImage image = monitor.sendNextImage();
+				byte[] bytes = createBytesFromImage(image);
+				if (bytes != null){
+						dos.writeInt(bytes.length);
+						dos.write(bytes);
 				}
+				
 			}
-		
+			socket.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
+		
 	}
 
 	
@@ -42,7 +44,7 @@ public class ImageSender extends Thread {
 	private byte[] createBytesFromImage(BufferedImage image){
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write( image, "png", baos );
+			ImageIO.write( image, "jpg", baos );
 			baos.flush();
 			byte[] imageInByte = baos.toByteArray();
 			baos.close();
