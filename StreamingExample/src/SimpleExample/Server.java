@@ -12,7 +12,7 @@ public class Server {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		IMediaReader reader = ToolFactory.makeReader("media/mdl.mp4");
+		IMediaReader reader = ToolFactory.makeReader("media/sw.mp4");
 		ServerSocket ss;
 		try {
 			ss = new ServerSocket(7373);
