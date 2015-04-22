@@ -1,4 +1,4 @@
-package server;
+
 
 import java.awt.image.BufferedImage;
 
@@ -7,6 +7,7 @@ import com.xuggle.mediatool.MediaListenerAdapter;
 import com.xuggle.mediatool.MediaToolAdapter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.mediatool.event.IAudioSamplesEvent;
+import com.xuggle.mediatool.event.IReadPacketEvent;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
 import com.xuggle.xuggler.demos.VideoImage;
 import com.xuggle.xuggler.video.ConverterFactory;
@@ -20,8 +21,6 @@ class Listener extends MediaListenerAdapter{
 	
 	@Override
 	public void onAudioSamples(IAudioSamplesEvent event) {
-		// TODO Auto-generated method stub
-		super.onAudioSamples(event);
 		
 	}
 
@@ -31,6 +30,13 @@ class Listener extends MediaListenerAdapter{
 		System.out.println(event.getMediaData());
 		vi.setImage(bi);
 	}
+
+	@Override
+	public void onReadPacket(IReadPacketEvent event) {
+		
+	}
+	
+	
 	
 }
 
@@ -45,9 +51,10 @@ public class SimpleExample {
 		 IMediaReader reader = ToolFactory.makeReader("media/sw.mp4");
 //		  reader.addListener(ToolFactory.makeViewer(true));
 		 VideoImage vi = new VideoImage();
-		 MediaToolAdapter mta = new MediaToolAdapter();
-		 mta.addListener(new Listener(vi));
-		 reader.addListener(mta);
+//		 MediaToolAdapter mta = new MediaToolAdapter();
+//		 mta.addListener(new Listener(vi));
+//		 reader.addListener(mta);
+		 reader.addListener(new Listener(vi));
 		  while(reader.readPacket() == null)
 		    ;
 		  
