@@ -27,7 +27,6 @@ public class Server {
 			monitor.closeIt();
 			sl.printCounters();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
