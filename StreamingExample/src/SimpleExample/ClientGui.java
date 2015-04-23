@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.Socket;
 
 import javax.swing.BoxLayout;
@@ -20,6 +21,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
+
 import java.awt.FlowLayout;
 
 public class ClientGui {
@@ -85,17 +87,17 @@ public class ClientGui {
 		
 		JButton btnPlay = new JButton("Play");
 		actionPanel.add(btnPlay);
+		btnPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Play pressed");
+			}
+		});
 		
 		JButton btnPause = new JButton("Pause");
 		actionPanel.add(btnPause);
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Pause pressed");
-			}
-		});
-		btnPlay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Play pressed");
 			}
 		});
 		
@@ -108,7 +110,12 @@ public class ClientGui {
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Exit pressed");
-				System.exit(0);
+				try {
+					socket.close();
+					System.exit(0);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		
