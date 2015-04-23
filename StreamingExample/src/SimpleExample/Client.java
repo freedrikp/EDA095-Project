@@ -16,10 +16,13 @@ public class Client {
 		ClientGui gui = new ClientGui();
 
 		try {
-			Socket socket = new Socket("localhost", 7373);
+			Socket socket = new Socket("localhost", 7374);
 			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			gui.setSocket(socket);
+			long previousTimestamp = 0;
+			long lastShown = 0;
 			while (!socket.isClosed()) {
+				long timestamp = dis.readLong();
 				int length = dis.readInt();
 				byte[] bytes = new byte[length];
 				int bytesRead = 0;
@@ -28,11 +31,16 @@ public class Client {
 					bytesRead += read;
 				}
 				try {
-					Thread.sleep(30);
+					long timeToSleep = timestamp-previousTimestamp-(System.currentTimeMillis()-lastShown);
+					if (timeToSleep > 0){
+						Thread.sleep(timeToSleep);				
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				previousTimestamp = timestamp;
 				gui.setImage(createImageFromBytes(bytes));
+				lastShown = System.currentTimeMillis();
 			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

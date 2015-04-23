@@ -1,23 +1,22 @@
 package SimpleExample;
 
-import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
 public class ImageBuffer {
 	private boolean closed;
-	private LinkedList<BufferedImage> images;
+	private LinkedList<ImageBufferElement> images;
 
 	public ImageBuffer() {
-		this.images = new LinkedList<BufferedImage>();
+		this.images = new LinkedList<ImageBufferElement>();
 		this.closed = false;
 	}
 
-	public synchronized void addImage(BufferedImage image) {
+	public synchronized void addImage(ImageBufferElement image) {
 		images.addLast(image);
 		notifyAll();
 	}
 
-	public synchronized BufferedImage getNextImage() {
+	public synchronized ImageBufferElement getNextImage() {
 		while (images.isEmpty()) {
 			try {
 				wait();
@@ -36,7 +35,7 @@ public class ImageBuffer {
 		closed = true;
 	}
 
-	public boolean hasMore() {
+	public synchronized boolean hasMore() {
 		if (images.size() > 0) {
 			return true;
 		}else{

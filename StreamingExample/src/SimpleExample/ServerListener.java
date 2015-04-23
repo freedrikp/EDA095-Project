@@ -3,19 +3,31 @@ package SimpleExample;
 import java.awt.image.BufferedImage;
 
 import com.xuggle.mediatool.MediaListenerAdapter;
+import com.xuggle.mediatool.event.IAddStreamEvent;
 import com.xuggle.mediatool.event.IAudioSamplesEvent;
 import com.xuggle.mediatool.event.IReadPacketEvent;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
+import com.xuggle.xuggler.ICodec;
+import com.xuggle.xuggler.IStream;
+import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.video.ConverterFactory;
 
 public class ServerListener extends MediaListenerAdapter {
 	private ImageBuffer monitor;
-	private long packetCounter;
-	private long frameCounter;
 
 	public ServerListener(ImageBuffer monitor) {
 		super();
 		this.monitor = monitor;
+	}
+
+	@Override
+	public void onAddStream(IAddStreamEvent event) {
+//		IStream stream = event.getSource().getContainer().getStream(event.getStreamIndex());
+//		IStreamCoder coder = stream.getStreamCoder();
+//
+//		if (coder.getCodecType() == ICodec.Type.CODEC_TYPE_VIDEO) {
+//			videoStream = event.getStreamIndex();
+//		}
 	}
 
 	@Override
@@ -28,20 +40,12 @@ public class ServerListener extends MediaListenerAdapter {
 		BufferedImage bi = ConverterFactory.createConverter(
 				ConverterFactory.XUGGLER_BGR_24, event.getMediaData()).toImage(
 				event.getMediaData());
-		//System.out.println(event.getMediaData());
+		monitor.addImage(new ImageBufferElement(bi,event.getTimeStamp()/1000));
 
-		monitor.addImage(bi);
-		++frameCounter;
 	}
 
 	@Override
 	public void onReadPacket(IReadPacketEvent event) {
-		++packetCounter;
+		
 	}
-	
-	public void printCounters(){
-		System.out.println("Packets: " + packetCounter);
-		System.out.println("Frames: " + frameCounter);
-	}
-
 }

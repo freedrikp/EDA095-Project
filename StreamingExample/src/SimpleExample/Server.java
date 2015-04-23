@@ -15,7 +15,7 @@ public class Server {
 		IMediaReader reader = ToolFactory.makeReader("media/sw.mp4");
 		ServerSocket ss;
 		try {
-			ss = new ServerSocket(7373);
+			ss = new ServerSocket(7374);
 			Socket socket = ss.accept();
 			ImageBuffer monitor = new ImageBuffer();
 			ImageSender is = new ImageSender(monitor, socket);
@@ -25,7 +25,6 @@ public class Server {
 			while (reader.readPacket() == null)
 				;
 			monitor.closeIt();
-			sl.printCounters();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
