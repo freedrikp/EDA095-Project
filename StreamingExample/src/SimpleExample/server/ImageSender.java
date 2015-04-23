@@ -35,6 +35,7 @@ public class ImageSender extends Thread {
 				}
 				
 			}
+			dos.writeLong(-1);
 			socket.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -45,7 +46,7 @@ public class ImageSender extends Thread {
 	
 	
 	
-	private byte[] createBytesFromImage(BufferedImage image){
+	private static byte[] createBytesFromImage(BufferedImage image){
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write( image, "jpg", baos );

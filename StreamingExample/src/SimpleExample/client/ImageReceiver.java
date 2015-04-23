@@ -25,13 +25,17 @@ public class ImageReceiver extends Thread {
 			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			while (!socket.isClosed()) {
 				long timestamp = dis.readLong();
+				if (timestamp == -1){
+					break;
+				}
 				int length = dis.readInt();
 				byte[] bytes = new byte[length];
-				int bytesRead = 0;
-				int read = 0;
-				while ((read = dis.read(bytes, bytesRead, length - bytesRead)) > 0) {
-					bytesRead += read;
-				}
+//				int bytesRead = 0;
+//				int read = 0;
+				dis.readFully(bytes);
+//				while ((read = dis.read(bytes, bytesRead, length - bytesRead)) > 0) {
+//					bytesRead += read;
+//				}
 				buffer.addImage(new ImageBufferElement(createImageFromBytes(bytes),timestamp));
 				
 			}
