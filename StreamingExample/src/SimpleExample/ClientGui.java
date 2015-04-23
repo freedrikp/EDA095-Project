@@ -131,10 +131,10 @@ public class ClientGui {
 				System.out.println("Exit pressed");
 				try {
 					socket.close();
-					System.exit(0);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+				System.exit(0);
 			}
 		});
 

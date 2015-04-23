@@ -1,13 +1,8 @@
 package SimpleExample;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import javax.imageio.ImageIO;
 
 public class Client {
 
@@ -17,8 +12,8 @@ public class Client {
 		try {
 			Socket socket = new Socket("localhost", 7374);
 			gui.setSocket(socket);
-			ClientImageBuffer cib = new ClientImageBuffer();
-			ImageReceiver ir = new ImageReceiver(cib,socket,gui);
+			ClientImageBuffer cib = new ClientImageBuffer(gui);
+			ImageReceiver ir = new ImageReceiver(cib,socket);
 			ir.start();
 			long previousTimestamp = 0;
 			long lastShown = 0;

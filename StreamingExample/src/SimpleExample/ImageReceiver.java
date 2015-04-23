@@ -12,12 +12,10 @@ public class ImageReceiver extends Thread {
 
 	private ClientImageBuffer buffer;
 	private Socket socket;
-	private ClientGui gui;
 
-	public ImageReceiver(ClientImageBuffer buffer, Socket socket, ClientGui gui) {
+	public ImageReceiver(ClientImageBuffer buffer, Socket socket) {
 		this.buffer = buffer;
 		this.socket = socket;
-		this.gui = gui;
 	}
 
 	public void run() {
@@ -33,7 +31,7 @@ public class ImageReceiver extends Thread {
 					bytesRead += read;
 				}
 				buffer.addImage(new ImageBufferElement(createImageFromBytes(bytes),timestamp));
-				gui.updateProgressBar(buffer.getBufferSize());
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
