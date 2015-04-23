@@ -10,6 +10,8 @@ import com.xuggle.xuggler.video.ConverterFactory;
 
 public class ServerListener extends MediaListenerAdapter {
 	private ImageBuffer monitor;
+	private long packetCounter;
+	private long frameCounter;
 
 	public ServerListener(ImageBuffer monitor) {
 		super();
@@ -29,11 +31,17 @@ public class ServerListener extends MediaListenerAdapter {
 		//System.out.println(event.getMediaData());
 
 		monitor.addImage(bi);
+		++frameCounter;
 	}
 
 	@Override
 	public void onReadPacket(IReadPacketEvent event) {
-
+		++packetCounter;
+	}
+	
+	public void printCounters(){
+		System.out.println("Packets: " + packetCounter);
+		System.out.println("Frames: " + frameCounter);
 	}
 
 }

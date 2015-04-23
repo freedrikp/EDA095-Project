@@ -20,10 +20,12 @@ public class Server {
 			ImageBuffer monitor = new ImageBuffer();
 			ImageSender is = new ImageSender(monitor, socket);
 			is.start();
-			reader.addListener(new ServerListener(monitor));
+			ServerListener sl = new ServerListener(monitor);
+			reader.addListener(sl);
 			while (reader.readPacket() == null)
 				;
 			monitor.closeIt();
+			sl.printCounters();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
