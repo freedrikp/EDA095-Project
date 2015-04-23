@@ -17,7 +17,7 @@
  * along with Xuggle-Xuggler-Main.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-package server;
+package demos;
 
 import java.awt.image.BufferedImage;
 

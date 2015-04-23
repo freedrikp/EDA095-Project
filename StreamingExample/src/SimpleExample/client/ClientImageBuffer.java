@@ -1,6 +1,8 @@
-package SimpleExample;
+package SimpleExample.client;
 
 import java.util.LinkedList;
+
+import SimpleExample.common.ImageBufferElement;
 
 public class ClientImageBuffer {
 	private LinkedList<ImageBufferElement> buffer;

@@ -1,6 +1,8 @@
-package SimpleExample;
+package SimpleExample.server;
 
 import java.awt.image.BufferedImage;
+
+import SimpleExample.common.ImageBufferElement;
 
 import com.xuggle.mediatool.MediaListenerAdapter;
 import com.xuggle.mediatool.event.IAddStreamEvent;

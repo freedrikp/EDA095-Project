@@ -1,4 +1,4 @@
-package SimpleExample;
+package SimpleExample.client;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javax.imageio.ImageIO;
+
+import SimpleExample.common.ImageBufferElement;
 
 public class ImageReceiver extends Thread {
 
@@ -43,8 +45,9 @@ public class ImageReceiver extends Thread {
 		try {
 			return ImageIO.read(bais);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 }

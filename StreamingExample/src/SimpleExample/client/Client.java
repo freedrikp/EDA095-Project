@@ -1,8 +1,10 @@
-package SimpleExample;
+package SimpleExample.client;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import SimpleExample.common.ImageBufferElement;
 
 public class Client {
 
@@ -10,7 +12,7 @@ public class Client {
 
 		ClientGui gui = new ClientGui();
 		try {
-			Socket socket = new Socket("localhost", 7374);
+			Socket socket = new Socket("192.168.1.196", 7374);
 			gui.setSocket(socket);
 			ClientImageBuffer cib = new ClientImageBuffer(gui);
 			ImageReceiver ir = new ImageReceiver(cib,socket);

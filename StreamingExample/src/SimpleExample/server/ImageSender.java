@@ -1,4 +1,4 @@
-package SimpleExample;
+package SimpleExample.server;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javax.imageio.ImageIO;
+
+import SimpleExample.common.ImageBufferElement;
 
 public class ImageSender extends Thread {
 	private ServerImageBuffer monitor;
@@ -52,7 +54,6 @@ public class ImageSender extends Thread {
 			baos.close();
 			return imageInByte;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
