@@ -5,7 +5,8 @@ import java.util.LinkedList;
 public class ClientImageBuffer {
 	private LinkedList<ImageBufferElement> buffer;
 	private ClientGui gui;
-
+	private boolean firstImage = true;
+	
 	public ClientImageBuffer(ClientGui gui) {
 		this.buffer = new LinkedList<ImageBufferElement>();
 		this.gui = gui;
@@ -18,7 +19,7 @@ public class ClientImageBuffer {
 	}
 	
 	public synchronized ImageBufferElement getImage(){
-		gui.updateProgressBar(buffer.size());
+		if(firstImage){
 		while(buffer.size() < 100){
 			try {
 				wait();
@@ -26,6 +27,16 @@ public class ClientImageBuffer {
 				e.printStackTrace();
 			}
 		}
+		firstImage = false;
+		}
+		while(buffer.isEmpty()){
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		gui.updateProgressBar(buffer.size());
 		return buffer.poll();
 	}
 	

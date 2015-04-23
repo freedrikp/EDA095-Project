@@ -73,19 +73,19 @@ public class ClientGui {
 		progressBar.setBackground(Color.DARK_GRAY);
 		progressBar.setValue(0);
 		this.progressBar = progressBar;
-
-		JLabel movieScreen = new JLabel();
-		movieScreenPanel.add(movieScreen);
-		movieScreen.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("Musklick paus kanske?");
-				progressBar.setValue(progressBar.getValue() - 50);
-				System.gc();
-			}
-		});
-		movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
-		this.label = movieScreen;
+		
+				JLabel movieScreen = new JLabel();
+				movieScreenPanel.add(movieScreen);
+				movieScreen.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						System.out.println("Musklick paus kanske?");
+						progressBar.setValue(progressBar.getValue() - 50);
+						System.gc();
+					}
+				});
+				movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
+				this.label = movieScreen;
 
 		JPanel buttonPanel = new JPanel();
 		MainPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -179,6 +179,7 @@ public class ClientGui {
 	public void updateProgressBar(int bufferSize) {
 		if (bufferSize <= 100) {
 			progressBar.setValue(bufferSize);
+			procent.setVisible(true);
 		} else {
 			procent.setText(bufferSize + "%");
 		}
