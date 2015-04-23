@@ -2,25 +2,25 @@ package SimpleExample;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.Socket;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.JTabbedPane;
 import javax.swing.JList;
-import javax.swing.ListSelectionModel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import java.awt.FlowLayout;
 
 public class ClientGui {
 
@@ -28,6 +28,7 @@ public class ClientGui {
 	private Socket socket;
 	private boolean firstImage = true;
 	private JFrame frame;
+	private JProgressBar progressBar;
 
 	/**
 	 * Launch the application.
@@ -67,6 +68,7 @@ public class ClientGui {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				System.out.println("Musklick paus kanske?");
+				progressBar.setValue(progressBar.getValue()-50);
 			}
 		});
 		MainPanel.add(movieScreen, BorderLayout.CENTER);
@@ -83,19 +85,27 @@ public class ClientGui {
 		buttonPanel.add(actionPanel);
 		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar=new JProgressBar(0,1000);
+		progressBar.setForeground(Color.LIGHT_GRAY);
+		progressBar.setBackground(Color.DARK_GRAY);
+		progressBar.setValue(0);
+		actionPanel.add(progressBar);
+		this.progressBar = progressBar;
+		
 		JButton btnPlay = new JButton("Play");
 		actionPanel.add(btnPlay);
+		btnPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Play pressed");
+			}
+		});
 		
 		JButton btnPause = new JButton("Pause");
 		actionPanel.add(btnPause);
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Pause pressed");
-			}
-		});
-		btnPlay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Play pressed");
 			}
 		});
 		
@@ -108,7 +118,12 @@ public class ClientGui {
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Exit pressed");
-				System.exit(0);
+				try {
+					socket.close();
+					System.exit(0);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -146,6 +161,7 @@ public class ClientGui {
 			firstImage = false;
 		}
 		label.setIcon(new ImageIcon(image));
+		progressBar.setValue(progressBar.getValue()+1);
 	}
 
 	public void setSocket(Socket socket) {
