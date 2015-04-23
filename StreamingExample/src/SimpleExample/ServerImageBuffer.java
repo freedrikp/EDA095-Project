@@ -2,11 +2,11 @@ package SimpleExample;
 
 import java.util.LinkedList;
 
-public class ImageBuffer {
+public class ServerImageBuffer {
 	private boolean closed;
 	private LinkedList<ImageBufferElement> images;
 
-	public ImageBuffer() {
+	public ServerImageBuffer() {
 		this.images = new LinkedList<ImageBufferElement>();
 		this.closed = false;
 	}

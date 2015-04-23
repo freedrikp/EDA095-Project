@@ -7,15 +7,12 @@ import com.xuggle.mediatool.event.IAddStreamEvent;
 import com.xuggle.mediatool.event.IAudioSamplesEvent;
 import com.xuggle.mediatool.event.IReadPacketEvent;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
-import com.xuggle.xuggler.ICodec;
-import com.xuggle.xuggler.IStream;
-import com.xuggle.xuggler.IStreamCoder;
 import com.xuggle.xuggler.video.ConverterFactory;
 
 public class ServerListener extends MediaListenerAdapter {
-	private ImageBuffer monitor;
+	private ServerImageBuffer monitor;
 
-	public ServerListener(ImageBuffer monitor) {
+	public ServerListener(ServerImageBuffer monitor) {
 		super();
 		this.monitor = monitor;
 	}

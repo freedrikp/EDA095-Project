@@ -9,10 +9,10 @@ import java.net.Socket;
 import javax.imageio.ImageIO;
 
 public class ImageSender extends Thread {
-	private ImageBuffer monitor;
+	private ServerImageBuffer monitor;
 	private Socket socket;
 
-	public ImageSender(ImageBuffer monitor, Socket socket) {
+	public ImageSender(ServerImageBuffer monitor, Socket socket) {
 		super();
 		this.monitor = monitor;
 		this.socket = socket;

@@ -14,22 +14,17 @@ public class Client {
 	public static void main(String[] args) {
 
 		ClientGui gui = new ClientGui();
-
 		try {
 			Socket socket = new Socket("localhost", 7374);
-			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			gui.setSocket(socket);
+			ClientImageBuffer cib = new ClientImageBuffer();
+			ImageReceiver ir = new ImageReceiver(cib,socket,gui);
+			ir.start();
 			long previousTimestamp = 0;
 			long lastShown = 0;
 			while (!socket.isClosed()) {
-				long timestamp = dis.readLong();
-				int length = dis.readInt();
-				byte[] bytes = new byte[length];
-				int bytesRead = 0;
-				int read = 0;
-				while ((read = dis.read(bytes, bytesRead, length - bytesRead)) > 0) {
-					bytesRead += read;
-				}
+				ImageBufferElement image = cib.getImage();
+				long timestamp = image.getTimestamp();
 				try {
 					long timeToSleep = timestamp-previousTimestamp-(System.currentTimeMillis()-lastShown);
 					if (timeToSleep > 0){
@@ -39,7 +34,7 @@ public class Client {
 					e.printStackTrace();
 				}
 				previousTimestamp = timestamp;
-				gui.setImage(createImageFromBytes(bytes));
+				gui.setImage(image.getImage());
 				lastShown = System.currentTimeMillis();
 			}
 		} catch (UnknownHostException e) {
@@ -50,13 +45,6 @@ public class Client {
 
 	}
 
-	private static BufferedImage createImageFromBytes(byte[] imageData) {
-		ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
-		try {
-			return ImageIO.read(bais);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	
 
 }
