@@ -9,6 +9,7 @@ import java.net.Socket;
 import javax.imageio.ImageIO;
 
 import SimpleExample.common.ImageBufferElement;
+import SimpleExample.common.Protocol;
 
 public class ImageSender extends Thread {
 	private ServerImageBuffer monitor;
@@ -29,13 +30,14 @@ public class ImageSender extends Thread {
 				ImageBufferElement image = monitor.getNextImage();
 				byte[] bytes = createBytesFromImage(image.getImage());
 				if (bytes != null){
+						dos.writeByte(Protocol.FRAME_BEGIN);
 						dos.writeLong(image.getTimestamp());
 						dos.writeInt(bytes.length);
 						dos.write(bytes);
 				}
 				
 			}
-			dos.writeLong(-1);
+			dos.writeByte(Protocol.STREAM_END);
 			socket.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();

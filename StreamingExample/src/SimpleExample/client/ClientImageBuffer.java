@@ -8,6 +8,7 @@ public class ClientImageBuffer {
 	private LinkedList<ImageBufferElement> buffer;
 	private ClientGui gui;
 	private boolean firstImage = true;
+	private boolean allFramesSent = false;
 	
 	public ClientImageBuffer(ClientGui gui) {
 		this.buffer = new LinkedList<ImageBufferElement>();
@@ -44,5 +45,21 @@ public class ClientImageBuffer {
 	
 	public synchronized int getBufferSize(){
 		return buffer.size();
+	}
+
+	public synchronized boolean moreToShow() {
+		while (!allFramesSent && buffer.isEmpty()){
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return !allFramesSent || !buffer.isEmpty();
+	}
+	
+	public synchronized void setAllFramesSent(boolean allFramesSent){
+		this.allFramesSent = allFramesSent;
+		notifyAll();
 	}
 }
