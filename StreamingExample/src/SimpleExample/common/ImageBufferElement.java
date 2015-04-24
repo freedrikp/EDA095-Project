@@ -1,4 +1,4 @@
-package SimpleExample;
+package SimpleExample.common;
 
 import java.awt.image.BufferedImage;
 

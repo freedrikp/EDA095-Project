@@ -1,6 +1,8 @@
-package SimpleExample;
+package SimpleExample.server;
 
 import java.util.LinkedList;
+
+import SimpleExample.common.ImageBufferElement;
 
 public class ServerImageBuffer {
 	private boolean closed;

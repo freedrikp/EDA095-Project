@@ -1,4 +1,4 @@
-package SimpleExample;
+package SimpleExample.server;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javax.imageio.ImageIO;
+
+import SimpleExample.common.ImageBufferElement;
 
 public class ImageSender extends Thread {
 	private ServerImageBuffer monitor;
@@ -33,6 +35,7 @@ public class ImageSender extends Thread {
 				}
 				
 			}
+			dos.writeLong(-1);
 			socket.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -43,7 +46,7 @@ public class ImageSender extends Thread {
 	
 	
 	
-	private byte[] createBytesFromImage(BufferedImage image){
+	private static byte[] createBytesFromImage(BufferedImage image){
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write( image, "jpg", baos );
@@ -52,7 +55,6 @@ public class ImageSender extends Thread {
 			baos.close();
 			return imageInByte;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

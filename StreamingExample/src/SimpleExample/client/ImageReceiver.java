@@ -1,4 +1,4 @@
-package SimpleExample;
+package SimpleExample.client;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javax.imageio.ImageIO;
+
+import SimpleExample.common.ImageBufferElement;
 
 public class ImageReceiver extends Thread {
 
@@ -23,13 +25,17 @@ public class ImageReceiver extends Thread {
 			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			while (!socket.isClosed()) {
 				long timestamp = dis.readLong();
+				if (timestamp == -1){
+					break;
+				}
 				int length = dis.readInt();
 				byte[] bytes = new byte[length];
-				int bytesRead = 0;
-				int read = 0;
-				while ((read = dis.read(bytes, bytesRead, length - bytesRead)) > 0) {
-					bytesRead += read;
-				}
+//				int bytesRead = 0;
+//				int read = 0;
+				dis.readFully(bytes);
+//				while ((read = dis.read(bytes, bytesRead, length - bytesRead)) > 0) {
+//					bytesRead += read;
+//				}
 				buffer.addImage(new ImageBufferElement(createImageFromBytes(bytes),timestamp));
 				
 			}
@@ -43,8 +49,9 @@ public class ImageReceiver extends Thread {
 		try {
 			return ImageIO.read(bais);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 }

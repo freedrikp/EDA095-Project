@@ -1,4 +1,4 @@
-package server;
+package demos;
 
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.ToolFactory;

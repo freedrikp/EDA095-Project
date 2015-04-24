@@ -1,4 +1,4 @@
-package SimpleExample;
+package SimpleExample.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
