@@ -44,6 +44,7 @@ public class ClientGui {
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @param progressBar 
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -67,12 +68,6 @@ public class ClientGui {
 		movieScreenPanel.setBackground(Color.DARK_GRAY);
 		MainPanel.add(movieScreenPanel, BorderLayout.CENTER);
 		movieScreenPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		progressBar = new JProgressBar(0, 100);
-		movieScreenPanel.add(progressBar);
-		progressBar.setForeground(Color.LIGHT_GRAY);
-		progressBar.setBackground(Color.DARK_GRAY);
-		progressBar.setValue(0);
-		this.progressBar = progressBar;
 		
 				JLabel movieScreen = new JLabel();
 				movieScreenPanel.add(movieScreen);
@@ -97,12 +92,16 @@ public class ClientGui {
 		buttonPanel.add(actionPanel);
 		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JProgressBar progressBar = new JProgressBar();
-
-		JLabel procent = new JLabel();
+		procent = new JLabel();
 		procent.setForeground(Color.WHITE);
 		actionPanel.add(procent);
-		this.procent = procent;
+
+		progressBar = new JProgressBar(0, 100);
+		actionPanel.add(progressBar);
+		progressBar.setForeground(Color.LIGHT_GRAY);
+		progressBar.setBackground(Color.DARK_GRAY);
+		progressBar.setValue(0);
+
 
 		JButton btnPlay = new JButton("Play");
 		actionPanel.add(btnPlay);
@@ -166,7 +165,6 @@ public class ClientGui {
 			frame.setBounds(100, 100, image.getWidth(), image.getHeight() + 125);
 			frame.setLocationRelativeTo(null);
 			firstImage = false;
-			progressBar.setVisible(false);
 		}
 		label.setIcon(new ImageIcon(image));
 
@@ -179,9 +177,8 @@ public class ClientGui {
 	public void updateProgressBar(int bufferSize) {
 		if (bufferSize <= 100) {
 			progressBar.setValue(bufferSize);
-			procent.setVisible(true);
-		} else {
-			procent.setText(bufferSize + "%");
+			progressBar.setVisible(true);
 		}
+		procent.setText(bufferSize + "%");
 	}
 }
