@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import SimpleExample.common.Configuration;
+
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.ToolFactory;
 
@@ -17,7 +19,7 @@ public class Server {
 		ExecutorService es = Executors.newCachedThreadPool();
 		ServerSocket ss;
 		try {
-			ss = new ServerSocket(7373);
+			ss = new ServerSocket(Configuration.COM_PORT);
 			while (true) {
 				Socket socket = ss.accept();
 				es.submit(new Streamer(socket, "media/sw.mp4"));

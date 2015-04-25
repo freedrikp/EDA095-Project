@@ -22,6 +22,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import SimpleExample.common.Configuration;
+
 public class ClientGui {
 
 	private JLabel label;
@@ -115,7 +117,7 @@ public class ClientGui {
 		procent.setForeground(Color.WHITE);
 		actionPanel.add(procent);
 
-		progressBar = new JProgressBar(0, 100);
+		progressBar = new JProgressBar(0, Configuration.CLIENT_BUFFER_SIZE);
 		actionPanel.add(progressBar);
 		progressBar.setForeground(Color.LIGHT_GRAY);
 		progressBar.setBackground(Color.DARK_GRAY);
@@ -200,7 +202,7 @@ public class ClientGui {
 	}
 
 	public void updateProgressBar(int bufferSize) {
-		if (bufferSize <= 100) {
+		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 			progressBar.setVisible(true);
 		}

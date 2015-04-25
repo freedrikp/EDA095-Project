@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
 public class Client {
@@ -32,7 +33,7 @@ public class Client {
 	public static void main(String[] args) {
 
 		try {
-			Socket socket = new Socket("localhost", 7373);
+			Socket socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
 			ClientGui gui = new ClientGui();
 			gui.setSocket(socket);
 			ClientImageBuffer cib = new ClientImageBuffer(gui);

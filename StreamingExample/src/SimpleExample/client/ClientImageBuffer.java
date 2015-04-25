@@ -2,6 +2,7 @@ package SimpleExample.client;
 
 import java.util.LinkedList;
 
+import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
 public class ClientImageBuffer {
@@ -24,7 +25,7 @@ public class ClientImageBuffer {
 
 	public synchronized ImageBufferElement getImage() {
 		if (firstImage) {
-			while (buffer.size() < 100) {
+			while (buffer.size() < Configuration.CLIENT_BUFFER_SIZE) {
 				try {
 					wait();
 				} catch (InterruptedException e) {
