@@ -9,6 +9,7 @@ public class Protocol {
 	public static final byte STREAM_END = 11;
 	
 	// Client => Server
+	public static final byte CLOSE_STREAM = 20;
 	
 	
 }

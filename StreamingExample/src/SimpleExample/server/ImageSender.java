@@ -13,32 +13,24 @@ import SimpleExample.common.Protocol;
 
 public class ImageSender extends Thread {
 	private ServerImageBuffer monitor;
-	private Socket socket;
+	private ServerSender ss;
 
-	public ImageSender(ServerImageBuffer monitor, Socket socket) {
+	public ImageSender(ServerImageBuffer monitor, ServerSender ss) {
 		super();
 		this.monitor = monitor;
-		this.socket = socket;
+		this.ss = ss;
 	}
 
 	public void run() {
-		DataOutputStream dos;
 		try {
-			dos = new DataOutputStream(socket.getOutputStream());
-
 			while (!monitor.finished() || monitor.hasMore()) {
 				ImageBufferElement image = monitor.getNextImage();
 				byte[] bytes = createBytesFromImage(image.getImage());
 				if (bytes != null){
-						dos.writeByte(Protocol.FRAME_BEGIN);
-						dos.writeLong(image.getTimestamp());
-						dos.writeInt(bytes.length);
-						dos.write(bytes);
+						ss.sendFrame(bytes, image.getTimestamp());
 				}
-				
 			}
-			dos.writeByte(Protocol.STREAM_END);
-			socket.close();
+			ss.sendEndOfStream();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

@@ -30,10 +30,14 @@ public class ClientReceiver extends Thread {
 				command = dis.readByte();
 				switch (command) {
 				case Protocol.FRAME_BEGIN:
+//					System.out.println("Frame received");
 					receiveImage();
 					break;
 				case Protocol.STREAM_END:
+//					System.out.println("End of stream");
 					break;
+				default:
+					System.out.println("Unknown command from server");
 				}
 			}
 			buffer.setAllFramesSent(true);
