@@ -12,6 +12,7 @@ public class Client {
 		long previousTimestamp = 0;
 		long lastShown = 0;
 		while (cib.moreToShow()) {
+			cib.waitForPlay();
 			ImageBufferElement image = cib.getImage();
 			long timestamp = image.getTimestamp();
 			try {
@@ -35,6 +36,7 @@ public class Client {
 			ClientGui gui = new ClientGui();
 			gui.setSocket(socket);
 			ClientImageBuffer cib = new ClientImageBuffer(gui);
+			gui.setImageBuffer(cib);
 			ClientReceiver ir = new ClientReceiver(cib,socket);
 			ir.start();
 			showMovie(cib,gui);

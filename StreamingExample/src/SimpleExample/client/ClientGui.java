@@ -30,6 +30,7 @@ public class ClientGui {
 	private JFrame frame;
 	private JProgressBar progressBar;
 	private JLabel procent;
+	private ClientImageBuffer cib;
 
 	/**
 	 * Launch the application.
@@ -108,6 +109,7 @@ public class ClientGui {
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Play pressed");
+				cib.setPlayNotPause(true);
 			}
 		});
 
@@ -116,6 +118,7 @@ public class ClientGui {
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Pause pressed");
+				cib.setPlayNotPause(false);
 			}
 		});
 
@@ -172,6 +175,10 @@ public class ClientGui {
 
 	public void setSocket(Socket socket) {
 		this.socket = socket;
+	}
+	
+	public void setImageBuffer(ClientImageBuffer cib){
+		this.cib = cib;
 	}
 
 	public void updateProgressBar(int bufferSize) {
