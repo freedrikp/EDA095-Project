@@ -31,6 +31,8 @@ public class ClientGui {
 	private JProgressBar progressBar;
 	private JLabel procent;
 	private ClientImageBuffer cib;
+	private boolean fullScreen = false;
+	private int mouseClicks = 1;
 
 	/**
 	 * Launch the application.
@@ -75,8 +77,24 @@ public class ClientGui {
 				movieScreen.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
+						if(e.getClickCount() == 2){
+							if(!fullScreen){
+								frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+							}else{
+								frame.setExtendedState(JFrame.NORMAL);
+								
+							}
+							fullScreen = !fullScreen;
+						}
 						System.out.println("Musklick paus kanske?");
-						progressBar.setValue(progressBar.getValue() - 50);
+						if(mouseClicks%2 == 1){
+						cib.setPlayNotPause(false);
+						mouseClicks++;
+						}else{
+							cib.setPlayNotPause(true);
+							mouseClicks = 1;
+						}
+						//progressBar.setValue(progressBar.getValue() - 50);
 						System.gc();
 					}
 				});
@@ -186,6 +204,6 @@ public class ClientGui {
 			progressBar.setValue(bufferSize);
 			progressBar.setVisible(true);
 		}
-		procent.setText(bufferSize + "%");
+		procent.setText(bufferSize + " frames to play");
 	}
 }
