@@ -97,18 +97,13 @@ public class ClientGui {
 					}
 					fullscreen = !fullscreen;
 				}
-				// System.out.println("Musklick paus kanske?");
-				if (mouseClicks % 2 == 1) {
+				if (cib.isPlaying()) {
 					cib.setPlayNotPause(false);
 					btnPlay.setText("Play");
-					mouseClicks++;
 				} else {
 					cib.setPlayNotPause(true);
 					btnPlay.setText("Pause");
-					mouseClicks = 1;
 				}
-				// progressBar.setValue(progressBar.getValue() - 50);
-				// System.gc();
 			}
 		});
 		movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
