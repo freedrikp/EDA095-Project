@@ -21,6 +21,7 @@ public class Streamer implements Runnable {
 			ServerSender ss = new ServerSender(socket);
 			ImageSender is = new ImageSender(monitor, ss);
 			is.start();
+			new ServerReceiver(monitor,socket).start();
 			ServerListener sl = new ServerListener(monitor);
 			reader.addListener(sl);
 			do{
