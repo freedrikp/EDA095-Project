@@ -7,6 +7,8 @@ import SimpleExample.common.ImageBufferElement;
 public class ServerImageBuffer {
 	private boolean closed;
 	private LinkedList<ImageBufferElement> images;
+	private boolean runStream = false;
+	private boolean streamOpen = true;
 
 	public ServerImageBuffer() {
 		this.images = new LinkedList<ImageBufferElement>();
@@ -43,5 +45,29 @@ public class ServerImageBuffer {
 		}else{
 			return false;
 		}
+	}
+	
+	public synchronized void setRunStream(boolean runStream){
+		this.runStream = runStream;
+		notifyAll();
+	}
+	
+	public synchronized void waitForRunStream(){
+		while (!runStream){
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public synchronized void setStreamOpen(boolean streamOpen){
+		this.streamOpen = streamOpen;
+		notifyAll();
+	}
+	
+	public synchronized boolean isStreamOpen(){
+		return streamOpen;
 	}
 }

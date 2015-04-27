@@ -23,8 +23,9 @@ public class Streamer implements Runnable {
 			is.start();
 			ServerListener sl = new ServerListener(monitor);
 			reader.addListener(sl);
-			while (reader.readPacket() == null)
-				;
+			do{
+				monitor.waitForRunStream();
+			}while (reader.readPacket() == null && monitor.isStreamOpen());
 			monitor.closeIt();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -26,7 +26,7 @@ public class ImageSender extends Thread {
 
 	public void run() {
 		try {
-			while (!monitor.finished() || monitor.hasMore()) {
+			while ((!monitor.finished() || monitor.hasMore()) && monitor.isStreamOpen() ) {
 				ImageBufferElement image = monitor.getNextImage();
 				byte[] bytes = createBytesFromImage(image.getImage(),Configuration.SERVER_COMPRESSION_QAULITY);
 				if (bytes != null) {
