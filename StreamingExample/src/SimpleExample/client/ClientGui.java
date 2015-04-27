@@ -159,7 +159,7 @@ public class ClientGui {
 					btnStreamPlay.setText("Start stream");
 					}
 				} catch (IOException e1) {
-					System.err.println("Error: Stream won't start");
+					btnStreamPlay.setEnabled(false);
 				}
 			}
 		});
