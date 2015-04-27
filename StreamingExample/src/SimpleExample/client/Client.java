@@ -26,6 +26,7 @@ public class Client {
 			}
 			previousTimestamp = timestamp;
 			gui.setImage(image.getImage());
+			gui.updateProgressBar();
 			lastShown = System.currentTimeMillis();
 		}
 	}
@@ -35,12 +36,12 @@ public class Client {
 		try {
 			Socket socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
 			ClientSender cs = new ClientSender(socket);
-			ClientGui gui = new ClientGui(cs);
-			gui.setSocket(socket);
-			ClientImageBuffer cib = new ClientImageBuffer(gui);
-			gui.setImageBuffer(cib);
+			ClientImageBuffer cib = new ClientImageBuffer();
+			cs.sendGetMovieList();
 			ClientReceiver ir = new ClientReceiver(cib,socket);
 			ir.start();
+			ClientGui gui = new ClientGui(cs,cib);
+			gui.setSocket(socket);
 			showMovie(cib,gui);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

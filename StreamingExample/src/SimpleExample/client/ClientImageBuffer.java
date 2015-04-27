@@ -7,20 +7,17 @@ import SimpleExample.common.ImageBufferElement;
 
 public class ClientImageBuffer {
 	private LinkedList<ImageBufferElement> buffer;
-	private ClientGui gui;
 	private boolean firstImage = true;
 	private boolean allFramesSent = false;
 	private boolean playNotPause = false;
 	private String[] movieList;
 
-	public ClientImageBuffer(ClientGui gui) {
+	public ClientImageBuffer() {
 		this.buffer = new LinkedList<ImageBufferElement>();
-		this.gui = gui;
 	}
 
 	public synchronized void addImage(ImageBufferElement image) {
 		buffer.add(image);
-		gui.updateProgressBar(buffer.size());
 		notifyAll();
 	}
 
@@ -42,11 +39,10 @@ public class ClientImageBuffer {
 				e.printStackTrace();
 			}
 		}
-		gui.updateProgressBar(buffer.size());
 		return buffer.poll();
 	}
 
-	public synchronized int getBufferSize() {
+	public synchronized int getSize() {
 		return buffer.size();
 	}
 

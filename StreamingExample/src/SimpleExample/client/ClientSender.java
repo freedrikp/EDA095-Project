@@ -29,5 +29,10 @@ public class ClientSender {
 	
 	public synchronized void sendGetMovieList() throws IOException{
 		dos.writeByte(Protocol.GIVE_MOVIE_LIST);
+		System.out.println("BLA");
+	}
+	public synchronized void sendTitle(String title) throws IOException{
+		dos.writeByte(Protocol.CHOSEN_TITLE);
+		dos.writeUTF(title);
 	}
 }

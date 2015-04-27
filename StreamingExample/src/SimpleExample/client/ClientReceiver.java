@@ -13,12 +13,12 @@ import SimpleExample.common.Protocol;
 
 public class ClientReceiver extends Thread {
 
-	private ClientImageBuffer buffer;
+	private ClientImageBuffer cib;
 	private Socket socket;
 	private DataInputStream dis;
 
-	public ClientReceiver(ClientImageBuffer buffer, Socket socket) throws IOException {
-		this.buffer = buffer;
+	public ClientReceiver(ClientImageBuffer cib, Socket socket) throws IOException {
+		this.cib = cib;
 		this.socket = socket;
 		this.dis = new DataInputStream(socket.getInputStream());
 	}
@@ -43,7 +43,7 @@ public class ClientReceiver extends Thread {
 					System.out.println("Unknown command from server");
 				}
 			}
-			buffer.setAllFramesSent(true);
+			cib.setAllFramesSent(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -55,7 +55,7 @@ public class ClientReceiver extends Thread {
 		for(int i=0;i<size; i++){
 			movieList[i] = dis.readUTF();
 		}
-		
+		cib.setMovieList(movieList);
 	}
 
 	private void receiveImage() {
@@ -64,7 +64,7 @@ public class ClientReceiver extends Thread {
 			int length = dis.readInt();
 			byte[] bytes = new byte[length];
 			dis.readFully(bytes);
-			buffer.addImage(new ImageBufferElement(createImageFromBytes(bytes),
+			cib.addImage(new ImageBufferElement(createImageFromBytes(bytes),
 					timestamp));
 		} catch (IOException e) {
 			e.printStackTrace();

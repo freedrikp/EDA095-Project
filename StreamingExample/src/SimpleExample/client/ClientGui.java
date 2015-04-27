@@ -27,6 +27,9 @@ import javax.swing.UIManager;
 
 import SimpleExample.common.Configuration;
 
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+
 public class ClientGui {
 
 	private JLabel label;
@@ -42,6 +45,7 @@ public class ClientGui {
 	private JButton btnPlay;
 	private JButton btnStreamPlay;
 	private ClientSender cs;
+	private JList list;
 
 	/**
 	 * Launch the application.
@@ -49,10 +53,12 @@ public class ClientGui {
 
 	/**
 	 * Create the application.
+	 * @param cib 
 	 */
-	public ClientGui(ClientSender cs) {
-		initialize();
+	public ClientGui(ClientSender cs, ClientImageBuffer cib) {
 		this.cs = cs;
+		this.cib = cib;
+		initialize();
 	}
 
 	/**
@@ -60,6 +66,7 @@ public class ClientGui {
 	 * 
 	 * @param progressBar
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initialize() {
 		frame = new JFrame();
 
@@ -184,12 +191,10 @@ public class ClientGui {
 		selectPanel.setBackground(Color.DARK_GRAY);
 		tabbedPane.addTab("Select Panel", null, selectPanel, null);
 		selectPanel.setLayout(new BorderLayout(0, 0));
-		try {
-			cs.sendGetMovieList();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		JList list = new JList(cib.getMovieList());
+		System.out.println("CIB: " + cib);
+		
+		list = new JList(cib.getMovieList());
+		System.out.println("movieList hämtad");
 		list.setBorder(UIManager.getBorder("List.focusCellHighlightBorder"));
 		list.setBackground(Color.DARK_GRAY);
 		list.setForeground(Color.WHITE);
@@ -200,6 +205,15 @@ public class ClientGui {
 		selectPanel.add(selectButtonPanel, BorderLayout.SOUTH);
 
 		JButton btnSelect = new JButton("Select");
+		btnSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					cs.sendTitle(list.getSelectedValue().toString());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		selectButtonPanel.add(btnSelect);
 		tabbedPane.setEnabledAt(1, true);
 
@@ -227,6 +241,7 @@ public class ClientGui {
 			g.dispose();
 			image = fullscreenImage;
 		}
+		updateProgressBar();
 		label.setIcon(new ImageIcon(image));
 
 	}
@@ -235,11 +250,9 @@ public class ClientGui {
 		this.socket = socket;
 	}
 
-	public void setImageBuffer(ClientImageBuffer cib) {
-		this.cib = cib;
-	}
-
-	public void updateProgressBar(int bufferSize) {
+	public void updateProgressBar() {
+		int bufferSize = cib.getSize();
+		System.out.println("BUFFER SIZE"+cib.getSize());
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 			progressBar.setVisible(true);
