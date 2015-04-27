@@ -11,10 +11,12 @@ public class ServerReceiver extends Thread {
 	private ServerImageBuffer buffer;
 	private Socket socket;
 	private DataInputStream dis;
+	private ServerSender ss;
 
-	public ServerReceiver(ServerImageBuffer buffer, Socket socket) throws IOException {
+	public ServerReceiver(ServerImageBuffer buffer, Socket socket, ServerSender ss) throws IOException {
 		this.buffer = buffer;
 		this.socket = socket;
+		this.ss = ss;
 		this.dis = new DataInputStream(socket.getInputStream());
 	}
 	
@@ -32,6 +34,13 @@ public class ServerReceiver extends Thread {
 					break;
 				case Protocol.CLOSE_STREAM:
 					buffer.setStreamOpen(false);
+					break;
+				case Protocol.GIVE_MOVIE_LIST:
+					ss.sendMovieList();
+					break;
+				case Protocol.CHOSEN_TITLE:
+					String movieName = dis.readUTF();
+					buffer.setMovieName(movieName);
 					break;
 				default:
 					System.out.println("Unknown command from client");

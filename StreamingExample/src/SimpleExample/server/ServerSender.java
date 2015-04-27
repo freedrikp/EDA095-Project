@@ -1,9 +1,11 @@
 package SimpleExample.server;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
+import SimpleExample.common.Configuration;
 import SimpleExample.common.Protocol;
 
 public class ServerSender {
@@ -25,5 +27,14 @@ public class ServerSender {
 	public synchronized void sendEndOfStream() throws IOException{
 		dos.writeByte(Protocol.STREAM_END);
 		socket.close();
+	}
+
+	public synchronized void sendMovieList() throws IOException {
+		dos.writeByte(Protocol.LIST_START);	
+		File[] dir = new File(Configuration.MEDIA_DIRECTORY).listFiles();
+		dos.writeInt(dir.length);
+		for (File f : dir){
+			dos.writeUTF(f.getName());
+		}
 	}
 }
