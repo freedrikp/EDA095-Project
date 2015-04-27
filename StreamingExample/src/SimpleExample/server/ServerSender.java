@@ -34,7 +34,9 @@ public class ServerSender {
 		File[] dir = new File(Configuration.MEDIA_DIRECTORY).listFiles();
 		dos.writeInt(dir.length);
 		for (File f : dir){
-			dos.writeUTF(f.getName());
+			if (f.getName().startsWith(".",0)){
+				dos.writeUTF(f.getName());				
+			}
 		}
 	}
 }
