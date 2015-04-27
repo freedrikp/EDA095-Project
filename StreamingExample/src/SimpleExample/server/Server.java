@@ -8,9 +8,6 @@ import java.util.concurrent.Executors;
 
 import SimpleExample.common.Configuration;
 
-import com.xuggle.mediatool.IMediaReader;
-import com.xuggle.mediatool.ToolFactory;
-
 public class Server {
 	/**
 	 * @param args
@@ -18,11 +15,15 @@ public class Server {
 	public static void main(String[] args) {
 		ExecutorService es = Executors.newCachedThreadPool();
 		ServerSocket ss;
+		ServerSocket audioss;
 		try {
 			ss = new ServerSocket(Configuration.COM_PORT);
+			audioss = new ServerSocket(Configuration.AUDIO_COM_PORT);
 			while (true) {
 				Socket socket = ss.accept();
-				es.submit(new Streamer(socket));
+				Socket audioSocket = audioss.accept();
+				System.out.println(socket.isBound());
+				es.submit(new Streamer(socket, audioSocket));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

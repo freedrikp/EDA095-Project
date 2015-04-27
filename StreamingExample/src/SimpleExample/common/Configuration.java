@@ -4,6 +4,7 @@ public class Configuration {
 	
 	// General
 	public static final int COM_PORT = 7374;
+	public static final int AUDIO_COM_PORT = 7375;
 	
 	// Client
 	public static final int CLIENT_BUFFER_SIZE = 100;

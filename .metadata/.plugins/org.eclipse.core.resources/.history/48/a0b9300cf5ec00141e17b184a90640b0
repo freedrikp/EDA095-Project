@@ -1,0 +1,49 @@
+package SimpleExample.server;
+
+import java.util.LinkedList;
+
+public class AudioBuffer {
+	private boolean closed;
+	private LinkedList<byte[]> samples;
+
+	public AudioBuffer() {
+		this.samples = new LinkedList<byte[]>();
+		this.closed = false;
+	}
+
+	public synchronized void addSample(byte[] sample) {
+		samples.addLast(sample);
+		notifyAll();
+	}
+
+	public synchronized byte[] getNextSample() {
+		while (samples.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return samples.poll();
+	}
+
+	public synchronized boolean finished() {
+		return closed;
+	}
+
+	public synchronized void closeIt() {
+		closed = true;
+	}
+
+	public boolean hasMore() {
+		if (samples.size() > 0) {
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public int size(){
+		return samples.size();
+	}
+}

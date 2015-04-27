@@ -1,0 +1,54 @@
+package SimpleExample.server;
+
+import java.io.IOException;
+import java.net.Socket;
+
+import SimpleExample.common.Configuration;
+
+import com.xuggle.mediatool.IMediaReader;
+import com.xuggle.mediatool.ToolFactory;
+
+public class Streamer implements Runnable {
+	private Socket socket;
+	private Socket audioSocket;
+	
+
+	public Streamer(Socket socket, Socket audioSocket) {
+		this.socket = socket;
+		this.socket = audioSocket;
+		System.out.println("created streamer");
+	}
+
+	public void run() {
+		System.out.println("running streamer");
+		try {
+			ServerImageBuffer monitor = new ServerImageBuffer();
+			ServerAudioBuffer audioMonitor = new ServerAudioBuffer();
+			ServerSender ss = new ServerSender(socket);
+			if(audioSocket == null){
+				System.out.println("why null? :(");
+			}else{
+				System.out.println("socket not null. is it bound?");
+			}
+			System.out.println(audioSocket.isBound());
+			AudioSender as = new AudioSender(audioMonitor, audioSocket);
+			ImageSender is = new ImageSender(monitor, ss);
+			is.start();
+			as.start();
+			new ServerReceiver(monitor,socket,ss).start();
+			ServerListener sl = new ServerListener(monitor, audioMonitor);
+			String movie = monitor.getMovieName();
+			IMediaReader reader = ToolFactory.makeReader(Configuration.MEDIA_DIRECTORY+"/"+movie);
+			reader.addListener(sl);
+			do{
+				monitor.waitForRunStream();
+				audioMonitor.waitForRunStream();
+			}while (reader.readPacket() == null && monitor.isStreamOpen());
+			monitor.closeIt();
+			audioMonitor.closeIt();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+}

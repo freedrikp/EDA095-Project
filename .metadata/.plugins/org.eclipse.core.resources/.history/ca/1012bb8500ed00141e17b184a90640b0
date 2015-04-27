@@ -1,0 +1,28 @@
+package SimpleExample.client;
+
+import javax.sound.sampled.SourceDataLine;
+
+public class ClientSoundPlayer extends Thread{
+	private ClientAudioBuffer ab;
+	
+	public ClientSoundPlayer(ClientAudioBuffer ab){
+		this.ab=ab;
+		System.out.println();
+	}
+	
+	public void run(){
+		System.out.println("sound player Running");
+		while(ab.moreToPlay()){
+			System.out.println("sound player Running more");
+			byte[] b = ab.getSample();
+			playJavaSound(b, b.length);
+		}
+	}
+
+	private void playJavaSound(byte[] sample, int size){
+		System.out.println("playing sample size: " + size);
+	    Client.mLine.write(sample, 0, size);
+	    System.out.println("wrote to sound output. buffer size: ");
+	  }
+
+}

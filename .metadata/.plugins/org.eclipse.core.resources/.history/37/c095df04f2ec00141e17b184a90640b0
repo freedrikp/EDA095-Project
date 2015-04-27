@@ -1,0 +1,49 @@
+package SimpleExample.client;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+
+public class clientSoundPlayer extends Thread{
+	private AudioBuffer ab;
+	private SourceDataLine mLine;
+	private AudioFormat audioFormat;
+	private DataLine.Info info;
+	
+	public clientSoundPlayer(AudioBuffer ab){
+		this.ab=ab;
+		audioFormat = new AudioFormat(44100, 16, 2, true, false);
+		info = new DataLine.Info(SourceDataLine.class,
+				audioFormat);
+		try {
+			SourceDataLine mLine = (SourceDataLine) AudioSystem
+					.getLine(info);
+			mLine.open(audioFormat, 1024);
+			mLine.start();
+			audioBuffer = new AudioBuffer();
+			soundPlayer = new clientSoundPlayer(audioBuffer, mLine);
+			soundPlayer.start();
+		} catch (LineUnavailableException e) {
+			throw new RuntimeException("could not open audio line");
+			
+		this.mLine = mLine;
+	}
+	
+	public void run(){
+		System.out.println("Running");
+		while(!ab.finished()){
+			System.out.println("Running more");
+			byte[] b = ab.getNextSample();
+			playJavaSound(b, b.length);
+		}
+	}
+	
+	private void playJavaSound(byte[] sample, int size){
+		System.out.println("playing sample size: " + size);
+	    mLine.write(sample, 0, size);
+	    System.out.println("wrote to sound output. buffer size: ");
+	  }
+
+}

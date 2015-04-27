@@ -1,0 +1,44 @@
+package SimpleExample.server;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+public class AudioSender extends Thread {
+	private ServerAudioBuffer monitor;
+	private Socket socket;
+
+	public AudioSender(ServerAudioBuffer monitor, Socket socket) {
+		super();
+		this.monitor = monitor;
+		this.socket = socket;
+		if(socket == null){
+			System.out.println("why null?");
+		}
+	}
+
+	public void run() {
+		DataOutputStream dos;
+		try {
+			dos = new DataOutputStream(socket.getOutputStream());
+			while ((!monitor.finished() || monitor.hasMore()) && monitor.isStreamOpen() ) {
+				byte[] bytes = monitor.getNextSample();
+				if (bytes != null){
+						System.out.println("writing to audio output stream");
+						dos.writeInt(bytes.length);
+						System.out.println("wrote " + bytes.length);
+						dos.write(bytes);
+						System.out.println("Send audio of size " + bytes.length);
+				}else{
+					System.out.println("writing zero 0");
+					dos.writeInt(0);
+				}
+			}
+			System.out.println("Done sending audio");
+			socket.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+	}
+}

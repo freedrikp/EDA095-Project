@@ -1,0 +1,65 @@
+package SimpleExample.client;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+import javax.imageio.ImageIO;
+
+import SimpleExample.common.ImageBufferElement;
+import SimpleExample.common.Protocol;
+
+public class ClientAudioReceiver extends Thread {
+
+	private ClientAudioBuffer cab;
+	private Socket socket;
+	private DataInputStream dis;
+
+	public ClientAudioReceiver(ClientAudioBuffer cab, Socket socket) throws IOException {
+		this.cab = cab;
+		this.socket = socket;
+		this.dis = new DataInputStream(socket.getInputStream());
+	}
+
+	public void run() {
+		try {
+			byte command = 0;
+			while (!socket.isClosed() && command != Protocol.STREAM_END) {
+				command = dis.readByte();
+				switch (command) {
+				case Protocol.FRAME_BEGIN:
+//					System.out.println("Frame received");
+					receiveImage();
+					break;
+				case Protocol.STREAM_END:
+//					System.out.println("End of stream");
+					break;
+				case Protocol.LIST_START:
+					receiveMovieList();
+					break;
+				default:
+					System.out.println("Unknown command from server");
+				}
+			}
+			cab.setAllFramesSent(true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	private void receiveSample() {
+		try {
+			int length = dis.readInt();
+			byte[] bytes = new byte[length];
+			dis.readFully(bytes);
+			cab.addSample(bytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+}

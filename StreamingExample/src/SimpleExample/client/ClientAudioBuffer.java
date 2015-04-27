@@ -1,0 +1,82 @@
+package SimpleExample.client;
+
+import java.util.LinkedList;
+
+import SimpleExample.common.Configuration;
+
+public class ClientAudioBuffer {
+	private LinkedList<byte[]> buffer;
+//	private boolean firstsample = true;
+	private boolean allSamplesSent = false;
+	private boolean playNotPause = false;
+
+	public ClientAudioBuffer() {
+		this.buffer = new LinkedList<byte[]>();
+	}
+
+	public synchronized void addSample(byte[] sample) {
+		buffer.add(sample);
+//		System.out.println("audio sample added, notifying");
+		notifyAll();
+	}
+
+	public synchronized byte[] getSample() {
+//		if (firstsample) {
+//			while (buffer.size() < Configuration.CLIENT_BUFFER_SIZE) {
+//				try {
+//					wait();
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			firstsample = false;
+//		}
+		while (buffer.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return buffer.poll();
+	}
+
+	public synchronized int getSize() {
+		return buffer.size();
+	}
+
+	public synchronized boolean moreToPlay() {
+		while (!allSamplesSent && buffer.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return !allSamplesSent || !buffer.isEmpty();
+	}
+
+	public synchronized void setAllFramesSent(boolean allFramesSent) {
+		this.allSamplesSent = allFramesSent;
+		notifyAll();
+	}
+
+	public synchronized void setPlayNotPause(boolean playNotPause) {
+		this.playNotPause = playNotPause;
+		notifyAll();
+	}
+
+	public synchronized void waitForPlay() {
+		while (!playNotPause) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public synchronized boolean isPlaying() {
+		return playNotPause;
+	}
+}

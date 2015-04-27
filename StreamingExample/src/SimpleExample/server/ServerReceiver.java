@@ -12,9 +12,11 @@ public class ServerReceiver extends Thread {
 	private Socket socket;
 	private DataInputStream dis;
 	private ServerSender ss;
+	private ServerAudioBuffer audioBuffer;
 
-	public ServerReceiver(ServerImageBuffer buffer, Socket socket, ServerSender ss) throws IOException {
+	public ServerReceiver(ServerImageBuffer buffer, ServerAudioBuffer audioBuffer, Socket socket, ServerSender ss) throws IOException {
 		this.buffer = buffer;
+		this.audioBuffer = audioBuffer;
 		this.socket = socket;
 		this.ss = ss;
 		this.dis = new DataInputStream(socket.getInputStream());
@@ -28,12 +30,15 @@ public class ServerReceiver extends Thread {
 				switch (command) {
 				case Protocol.PLAY_STREAM:
 					buffer.setRunStream(true);
+					audioBuffer.setRunStream(true);
 					break;
 				case Protocol.PAUSE_STREAM:
 					buffer.setRunStream(false);
+					audioBuffer.setRunStream(false);
 					break;
 				case Protocol.CLOSE_STREAM:
 					buffer.setStreamOpen(false);
+					audioBuffer.setStreamOpen(false);
 					break;
 				case Protocol.GIVE_MOVIE_LIST:
 					ss.sendMovieList();

@@ -10,27 +10,34 @@ import com.xuggle.mediatool.ToolFactory;
 
 public class Streamer implements Runnable {
 	private Socket socket;
+	private Socket audioSocket;
 	
 
-	public Streamer(Socket socket) {
+	public Streamer(Socket socket, Socket audioSocket) {
 		this.socket = socket;
+		this.audioSocket = audioSocket;
 	}
 
 	public void run() {
 		try {
 			ServerImageBuffer monitor = new ServerImageBuffer();
+			ServerAudioBuffer audioMonitor = new ServerAudioBuffer();
 			ServerSender ss = new ServerSender(socket);
+			AudioSender as = new AudioSender(audioMonitor, audioSocket);
 			ImageSender is = new ImageSender(monitor, ss);
 			is.start();
-			new ServerReceiver(monitor,socket,ss).start();
-			ServerListener sl = new ServerListener(monitor);
+			as.start();
+			new ServerReceiver(monitor,audioMonitor,socket,ss).start();
+			ServerListener sl = new ServerListener(monitor, audioMonitor);
 			String movie = monitor.getMovieName();
 			IMediaReader reader = ToolFactory.makeReader(Configuration.MEDIA_DIRECTORY+"/"+movie);
 			reader.addListener(sl);
 			do{
 				monitor.waitForRunStream();
+				audioMonitor.waitForRunStream();
 			}while (reader.readPacket() == null && monitor.isStreamOpen());
 			monitor.closeIt();
+			audioMonitor.closeIt();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

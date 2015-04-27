@@ -9,14 +9,17 @@ import com.xuggle.mediatool.event.IAddStreamEvent;
 import com.xuggle.mediatool.event.IAudioSamplesEvent;
 import com.xuggle.mediatool.event.IReadPacketEvent;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
+import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.video.ConverterFactory;
 
 public class ServerListener extends MediaListenerAdapter {
 	private ServerImageBuffer monitor;
+	private ServerAudioBuffer audioMonitor;
 
-	public ServerListener(ServerImageBuffer monitor) {
+	public ServerListener(ServerImageBuffer monitor, ServerAudioBuffer audioMonitor) {
 		super();
 		this.monitor = monitor;
+		this.audioMonitor = audioMonitor;
 	}
 
 	@Override
@@ -31,7 +34,14 @@ public class ServerListener extends MediaListenerAdapter {
 
 	@Override
 	public void onAudioSamples(IAudioSamplesEvent event) {
-
+		IAudioSamples aSamples = event.getAudioSamples();
+		//System.out.println("samplerate: " + aSamples.getSampleRate());
+		//System.out.println("sampleSize for format in bits: " + IAudioSamples.findSampleBitDepth(aSamples.getFormat()));
+		//System.out.println("channels: " + aSamples.getChannels());
+		if(aSamples.isComplete()){
+			byte[] rawBytes = aSamples.getData().getByteArray(0, aSamples.getSize());
+			audioMonitor.addSample(rawBytes);
+		}
 	}
 
 	@Override

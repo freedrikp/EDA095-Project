@@ -46,7 +46,7 @@ public class ClientGui {
 	private JButton btnStreamPlay;
 	private ClientSender cs;
 	private JList list;
-
+	private ClientAudioBuffer cab;
 	/**
 	 * Launch the application.
 	 */
@@ -55,9 +55,10 @@ public class ClientGui {
 	 * Create the application.
 	 * @param cib 
 	 */
-	public ClientGui(ClientSender cs, ClientImageBuffer cib) {
+	public ClientGui(ClientSender cs, ClientImageBuffer cib, ClientAudioBuffer cab) {
 		this.cs = cs;
 		this.cib = cib;
+		this.cab = cab;
 		initialize();
 	}
 
@@ -106,9 +107,11 @@ public class ClientGui {
 				}
 				if (cib.isPlaying()) {
 					cib.setPlayNotPause(false);
+					cab.setPlayNotPause(false);
 					btnPlay.setText("Play");
 				} else {
 					cib.setPlayNotPause(true);
+					cab.setPlayNotPause(true);
 					btnPlay.setText("Pause");
 				}
 			}
@@ -147,6 +150,7 @@ public class ClientGui {
 					btnPlay.setText("Pause");
 				}
 				cib.setPlayNotPause(!cib.isPlaying());
+				cab.setPlayNotPause(!cab.isPlaying());
 			}
 		});
 
@@ -252,7 +256,7 @@ public class ClientGui {
 
 	public void updateProgressBar() {
 		int bufferSize = cib.getSize();
-		System.out.println("BUFFER SIZE"+cib.getSize());
+		//System.out.println("BUFFER SIZE"+cib.getSize());
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 			progressBar.setVisible(true);
