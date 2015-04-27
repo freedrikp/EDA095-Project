@@ -152,7 +152,7 @@ public class ClientGui {
 					btnPlay.setText("Pause");
 				}
 				cib.setPlayNotPause(!cib.isPlaying());
-				cab.setPlayNotPause(!cab.isPlaying());
+				cab.setPlayNotPause(!cib.isPlaying());
 			}
 		});
 

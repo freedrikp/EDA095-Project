@@ -46,8 +46,12 @@ public class ClientGui {
 	private JButton btnStreamPlay;
 	private ClientSender cs;
 	private JList list;
+<<<<<<< HEAD
 	private ClientAudioBuffer cab;
+=======
 	private boolean firstTimeBufferLoaded = true;
+
+>>>>>>> fd267a835609ae59913c0cf3d78570adbc55f879
 	/**
 	 * Launch the application.
 	 */
@@ -258,12 +262,14 @@ public class ClientGui {
 
 	public void updateProgressBar() {
 		int bufferSize = cib.getSize();
+<<<<<<< HEAD
 		//System.out.println("BUFFER SIZE"+cib.getSize());
+=======
+>>>>>>> fd267a835609ae59913c0cf3d78570adbc55f879
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 		}else if(firstTimeBufferLoaded){
 			cib.setPlayNotPause(true);
-			cab.setPlayNotPause(true);
 			btnPlay.setText("Pause");
 			btnPlay.setEnabled(true);
 			firstTimeBufferLoaded = false;

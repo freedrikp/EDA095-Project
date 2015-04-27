@@ -263,7 +263,6 @@ public class ClientGui {
 			progressBar.setValue(bufferSize);
 		}else if(firstTimeBufferLoaded){
 			cib.setPlayNotPause(true);
-			cab.setPlayNotPause(true);
 			btnPlay.setText("Pause");
 			btnPlay.setEnabled(true);
 			firstTimeBufferLoaded = false;

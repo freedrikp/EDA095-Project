@@ -67,14 +67,18 @@ public static SourceDataLine mLine;
 			ClientReceiver ir = new ClientReceiver(cib,socket);
 			ClientAudioReceiver car = new ClientAudioReceiver(cab, audioSocket);
 			ir.start();
+<<<<<<< HEAD
 			car.start();
 			ClientGui gui = new ClientGui(cs,cib,cab);
-			ClientGuiUpdater ugui = new ClientGuiUpdater(gui);
-			ugui.start();
 			if(initAudio()){
 				ClientSoundPlayer soundPlayer = new ClientSoundPlayer(cab);
 				soundPlayer.start();
 			}
+=======
+			ClientGui gui = new ClientGui(cs,cib);
+			ClientGuiUpdater ugui = new ClientGuiUpdater(gui);
+			ugui.start();
+>>>>>>> fd267a835609ae59913c0cf3d78570adbc55f879
 			gui.setSocket(socket);
 			showMovie(cib,gui);
 		} catch (UnknownHostException e) {
