@@ -254,7 +254,6 @@ public class ClientGui {
 
 	public void updateProgressBar() {
 		int bufferSize = cib.getSize();
-		System.out.println("buffer size: " + bufferSize);
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 		}else if(firstTimeBufferLoaded){
