@@ -26,7 +26,6 @@ public class Client {
 			}
 			previousTimestamp = timestamp;
 			gui.setImage(image.getImage());
-			gui.updateProgressBar();
 			lastShown = System.currentTimeMillis();
 		}
 	}
@@ -41,6 +40,8 @@ public class Client {
 			ClientReceiver ir = new ClientReceiver(cib,socket);
 			ir.start();
 			ClientGui gui = new ClientGui(cs,cib);
+			ClientGuiUpdater ugui = new ClientGuiUpdater(gui);
+			ugui.start();
 			gui.setSocket(socket);
 			showMovie(cib,gui);
 		} catch (UnknownHostException e) {

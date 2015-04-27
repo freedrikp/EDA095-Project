@@ -37,7 +37,7 @@ public class ClientGui {
 	private boolean firstImage = true;
 	private JFrame frame;
 	private JProgressBar progressBar;
-	private JLabel procent;
+	private JLabel nbrOfFrames;
 	private ClientImageBuffer cib;
 	private boolean fullscreen = false;
 	private int mouseClicks = 1;
@@ -46,6 +46,7 @@ public class ClientGui {
 	private JButton btnStreamPlay;
 	private ClientSender cs;
 	private JList list;
+	private boolean firstTimeBufferLoaded = true;
 
 	/**
 	 * Launch the application.
@@ -126,9 +127,9 @@ public class ClientGui {
 		buttonPanel.add(actionPanel);
 		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		procent = new JLabel();
-		procent.setForeground(Color.WHITE);
-		actionPanel.add(procent);
+		nbrOfFrames = new JLabel();
+		nbrOfFrames.setForeground(Color.WHITE);
+		actionPanel.add(nbrOfFrames);
 
 		progressBar = new JProgressBar(0, Configuration.CLIENT_BUFFER_SIZE);
 		actionPanel.add(progressBar);
@@ -137,6 +138,7 @@ public class ClientGui {
 		progressBar.setValue(0);
 
 		btnPlay = new JButton("Play");
+		btnPlay.setEnabled(false);
 		actionPanel.add(btnPlay);
 
 		btnPlay.addActionListener(new ActionListener() {
@@ -155,6 +157,7 @@ public class ClientGui {
 		buttonPanel.add(exitPanel, BorderLayout.EAST);
 
 		btnStreamPlay = new JButton("Start stream");
+		btnStreamPlay.setEnabled(false);
 		btnStreamPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -209,6 +212,7 @@ public class ClientGui {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					cs.sendTitle(list.getSelectedValue().toString());
+					btnStreamPlay.setEnabled(true);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -224,7 +228,6 @@ public class ClientGui {
 		if (firstImage) {
 			frame.setBounds(100, 100, image.getWidth(), image.getHeight() + 125);
 			frame.setLocationRelativeTo(null);
-			cib.setPlayNotPause(true);
 			firstImage = false;
 		}
 		if (fullscreen) {
@@ -232,8 +235,8 @@ public class ClientGui {
 			int width = (int) screenSize.getWidth();
 			int height = (int) (screenSize.getHeight() / 1.3);
 			label.setSize(width, height);
-			System.out.println("Size: " + label.getWidth() + " "
-					+ label.getHeight());
+//			System.out.println("Size: " + label.getWidth() + " "
+//					+ label.getHeight());
 			BufferedImage fullscreenImage = new BufferedImage(label.getWidth(),
 					label.getHeight(), BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = fullscreenImage.createGraphics();
@@ -241,7 +244,6 @@ public class ClientGui {
 			g.dispose();
 			image = fullscreenImage;
 		}
-		updateProgressBar();
 		label.setIcon(new ImageIcon(image));
 
 	}
@@ -252,11 +254,15 @@ public class ClientGui {
 
 	public void updateProgressBar() {
 		int bufferSize = cib.getSize();
-		System.out.println("BUFFER SIZE"+cib.getSize());
+		System.out.println("buffer size: " + bufferSize);
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
-			progressBar.setVisible(true);
+		}else if(firstTimeBufferLoaded){
+			cib.setPlayNotPause(true);
+			btnPlay.setText("Pause");
+			btnPlay.setEnabled(true);
+			firstTimeBufferLoaded = false;
 		}
-		procent.setText(bufferSize + " frames");
+		nbrOfFrames.setText(bufferSize + " frames");
 	}
 }

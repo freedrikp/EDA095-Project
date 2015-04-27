@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import SimpleExample.common.Configuration;
 import SimpleExample.common.Protocol;
@@ -32,11 +33,15 @@ public class ServerSender {
 	public synchronized void sendMovieList() throws IOException {
 		dos.writeByte(Protocol.LIST_START);	
 		File[] dir = new File(Configuration.MEDIA_DIRECTORY).listFiles();
-		dos.writeInt(dir.length-1);
+		ArrayList<String> toBeSent = new ArrayList<String>();
 		for (File f : dir){
 			if (f.getName().charAt(0) != '.'){
-				dos.writeUTF(f.getName());
+				toBeSent.add(f.getName());
 			}
+		}
+		dos.writeInt(toBeSent.size());
+		for(String s: toBeSent){
+			dos.writeUTF(s);
 		}
 	}
 }

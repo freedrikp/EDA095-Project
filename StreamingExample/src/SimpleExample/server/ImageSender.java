@@ -76,7 +76,7 @@ public class ImageSender extends Thread {
 			byte[] imageInByte = baos.toByteArray();
 			baos.close();
 			
-			System.out.println(imageInByte.length);
+//			System.out.println(imageInByte.length);
 			return imageInByte;
 		} catch (IOException e) {
 			e.printStackTrace();
