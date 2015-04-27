@@ -2,7 +2,10 @@ package SimpleExample.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,8 +36,9 @@ public class ClientGui {
 	private JProgressBar progressBar;
 	private JLabel procent;
 	private ClientImageBuffer cib;
-	private boolean fullScreen = false;
+	private boolean fullscreen = false;
 	private int mouseClicks = 1;
+	private JPanel movieScreenPanel;
 
 	/**
 	 * Launch the application.
@@ -80,15 +84,15 @@ public class ClientGui {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						if(e.getClickCount() == 2){
-							if(!fullScreen){
+							if(!fullscreen){
 								frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 							}else{
 								frame.setExtendedState(JFrame.NORMAL);
 								
 							}
-							fullScreen = !fullScreen;
+							fullscreen = !fullscreen;
 						}
-						System.out.println("Musklick paus kanske?");
+//						System.out.println("Musklick paus kanske?");
 						if(mouseClicks%2 == 1){
 						cib.setPlayNotPause(false);
 						mouseClicks++;
@@ -97,7 +101,7 @@ public class ClientGui {
 							mouseClicks = 1;
 						}
 						//progressBar.setValue(progressBar.getValue() - 50);
-						System.gc();
+//						System.gc();
 					}
 				});
 				movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -128,7 +132,7 @@ public class ClientGui {
 		actionPanel.add(btnPlay);
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Play pressed");
+//				System.out.println("Play pressed");
 				cib.setPlayNotPause(true);
 			}
 		});
@@ -137,7 +141,7 @@ public class ClientGui {
 		actionPanel.add(btnPause);
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Pause pressed");
+//				System.out.println("Pause pressed");
 				cib.setPlayNotPause(false);
 			}
 		});
@@ -189,6 +193,18 @@ public class ClientGui {
 			frame.setLocationRelativeTo(null);
 			firstImage = false;
 		}
+		if(fullscreen){
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			int width = (int)screenSize.getWidth();
+			int height = (int) (screenSize.getHeight()/1.3);
+			label.setSize(width, height);
+			System.out.println("Size: " + label.getWidth() + " " + label.getHeight());
+			BufferedImage fullscreenImage = new BufferedImage(label.getWidth(),label.getHeight(),BufferedImage.TYPE_INT_RGB);
+			Graphics2D g = fullscreenImage.createGraphics();
+			g.drawImage(image, 0, 0, label.getWidth(), label.getHeight(), null);
+			g.dispose();
+			image = fullscreenImage;
+		}
 		label.setIcon(new ImageIcon(image));
 
 	}
@@ -205,7 +221,10 @@ public class ClientGui {
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 			progressBar.setVisible(true);
+			if(bufferSize == Configuration.CLIENT_BUFFER_SIZE){
+				cib.setPlayNotPause(true);
+			}
 		}
-		procent.setText(bufferSize + " frames to play");
+		procent.setText(bufferSize + " frames");
 	}
 }
