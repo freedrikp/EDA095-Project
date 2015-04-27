@@ -32,9 +32,9 @@ public class ServerSender {
 	public synchronized void sendMovieList() throws IOException {
 		dos.writeByte(Protocol.LIST_START);	
 		File[] dir = new File(Configuration.MEDIA_DIRECTORY).listFiles();
-		dos.writeInt(dir.length);
+		dos.writeInt(dir.length-1);
 		for (File f : dir){
-			if (!f.getName().startsWith("\\.",0)){
+			if (f.getName().charAt(0) != '.'){
 				dos.writeUTF(f.getName());
 			}
 		}
