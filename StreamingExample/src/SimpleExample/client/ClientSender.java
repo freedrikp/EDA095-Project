@@ -26,4 +26,8 @@ public class ClientSender {
 	public synchronized void sendPauseStream() throws IOException{
 		dos.writeByte(Protocol.PAUSE_STREAM);
 	}
+	
+	public synchronized void sendGetMovieList() throws IOException{
+		dos.writeByte(Protocol.GIVE_MOVIE_LIST);
+	}
 }

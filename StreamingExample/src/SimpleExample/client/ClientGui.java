@@ -42,6 +42,7 @@ public class ClientGui {
 	private JButton btnPlay;
 	private JButton btnStreamPlay;
 	private ClientSender cs;
+
 	/**
 	 * Launch the application.
 	 */
@@ -51,9 +52,8 @@ public class ClientGui {
 	 */
 	public ClientGui(ClientSender cs) {
 		initialize();
-		this.cs =cs;
+		this.cs = cs;
 	}
-
 
 	/**
 	 * Initialize the contents of the frame.
@@ -131,7 +131,7 @@ public class ClientGui {
 
 		btnPlay = new JButton("Play");
 		actionPanel.add(btnPlay);
-		
+
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (cib.isPlaying()) {
@@ -146,17 +146,17 @@ public class ClientGui {
 		JPanel exitPanel = new JPanel();
 		exitPanel.setBackground(Color.GRAY);
 		buttonPanel.add(exitPanel, BorderLayout.EAST);
-		
+
 		btnStreamPlay = new JButton("Start stream");
 		btnStreamPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(btnStreamPlay.getText().equals("Start stream")){
-					cs.sendPlayStream();
-					btnStreamPlay.setText("Pause stream");
-					}else{
-					cs.sendPauseStream();
-					btnStreamPlay.setText("Start stream");
+					if (btnStreamPlay.getText().equals("Start stream")) {
+						cs.sendPlayStream();
+						btnStreamPlay.setText("Pause stream");
+					} else {
+						cs.sendPauseStream();
+						btnStreamPlay.setText("Start stream");
 					}
 				} catch (IOException e1) {
 					btnStreamPlay.setEnabled(false);
@@ -171,7 +171,7 @@ public class ClientGui {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Exit pressed");
 				try {
-					
+
 					socket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -183,7 +183,12 @@ public class ClientGui {
 		JPanel selectPanel = new JPanel();
 		selectPanel.setBackground(Color.DARK_GRAY);
 		tabbedPane.addTab("Select Panel", null, selectPanel, null);
- 		selectPanel.setLayout(new BorderLayout(0, 0));
+		selectPanel.setLayout(new BorderLayout(0, 0));
+		try {
+			cs.sendGetMovieList();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		JList list = new JList(cib.getMovieList());
 		list.setBorder(UIManager.getBorder("List.focusCellHighlightBorder"));
 		list.setBackground(Color.DARK_GRAY);
