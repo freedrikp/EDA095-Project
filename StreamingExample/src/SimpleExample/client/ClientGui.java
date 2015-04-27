@@ -40,6 +40,8 @@ public class ClientGui {
 	private int mouseClicks = 1;
 	private JPanel movieScreenPanel;
 	private JButton btnPlay;
+	private JButton btnStreamPlay;
+	private ClientSender cs;
 	/**
 	 * Launch the application.
 	 */
@@ -47,9 +49,11 @@ public class ClientGui {
 	/**
 	 * Create the application.
 	 */
-	public ClientGui() {
+	public ClientGui(ClientSender cs) {
 		initialize();
+		this.cs =cs;
 	}
+
 
 	/**
 	 * Initialize the contents of the frame.
@@ -135,7 +139,6 @@ public class ClientGui {
 		
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// System.out.println("Play pressed");
 				if (cib.isPlaying()) {
 					btnPlay.setText("Play");
 				} else {
@@ -149,8 +152,23 @@ public class ClientGui {
 		exitPanel.setBackground(Color.GRAY);
 		buttonPanel.add(exitPanel, BorderLayout.EAST);
 		
-		JButton btnConnect = new JButton("Connect");
-		exitPanel.add(btnConnect);
+		btnStreamPlay = new JButton("Start stream");
+		btnStreamPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(btnStreamPlay.getText().equals("Start stream")){
+					cs.sendPlayStream();
+					btnStreamPlay.setText("Pause stream");
+					}else{
+					cs.sendPauseStream();
+					btnStreamPlay.setText("Start stream");
+					}
+				} catch (IOException e1) {
+					System.err.println("Error: Stream won't start");
+				}
+			}
+		});
+		exitPanel.add(btnStreamPlay);
 
 		JButton btnExit = new JButton("Exit");
 		exitPanel.add(btnExit);
@@ -158,6 +176,7 @@ public class ClientGui {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Exit pressed");
 				try {
+					
 					socket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();

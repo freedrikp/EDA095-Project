@@ -34,7 +34,8 @@ public class Client {
 
 		try {
 			Socket socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
-			ClientGui gui = new ClientGui();
+			ClientSender cs = new ClientSender(socket);
+			ClientGui gui = new ClientGui(cs);
 			gui.setSocket(socket);
 			ClientImageBuffer cib = new ClientImageBuffer(gui);
 			gui.setImageBuffer(cib);
