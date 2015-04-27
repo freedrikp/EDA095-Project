@@ -11,6 +11,7 @@ public class ClientImageBuffer {
 	private boolean firstImage = true;
 	private boolean allFramesSent = false;
 	private boolean playNotPause = false;
+	private String[] movieList;
 
 	public ClientImageBuffer(ClientGui gui) {
 		this.buffer = new LinkedList<ImageBufferElement>();
@@ -79,8 +80,24 @@ public class ClientImageBuffer {
 			}
 		}
 	}
-	
-	public synchronized boolean isPlaying(){
+
+	public synchronized boolean isPlaying() {
 		return playNotPause;
+	}
+
+	public synchronized void setMovieList(String[] movieList) {
+		this.movieList = movieList;
+		notifyAll();
+	}
+
+	public synchronized String[] getMovieList() {
+		while (movieList == null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return movieList;
 	}
 }

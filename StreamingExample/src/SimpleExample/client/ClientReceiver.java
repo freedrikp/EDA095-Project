@@ -36,6 +36,9 @@ public class ClientReceiver extends Thread {
 				case Protocol.STREAM_END:
 //					System.out.println("End of stream");
 					break;
+				case Protocol.LIST_START:
+					receiveMovieList();
+					break;
 				default:
 					System.out.println("Unknown command from server");
 				}
@@ -44,6 +47,15 @@ public class ClientReceiver extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void receiveMovieList() throws IOException {
+		int size = dis.readInt();
+		String [] movieList = new String[size];
+		for(int i=0;i<size; i++){
+			movieList[i] = dis.readUTF();
+		}
+		
 	}
 
 	private void receiveImage() {

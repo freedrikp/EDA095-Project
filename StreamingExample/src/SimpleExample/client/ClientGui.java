@@ -180,21 +180,19 @@ public class ClientGui {
 			}
 		});
 
-		JPanel SelectPanel = new JPanel();
-		SelectPanel.setBackground(Color.DARK_GRAY);
-		tabbedPane.addTab("Select Panel", null, SelectPanel, null);
-		String listData[] = { "Star Wars - Force Awakens", "Taken 4",
-				"James Bond", "Pumping Iron" };
-		SelectPanel.setLayout(new BorderLayout(0, 0));
-		JList list = new JList(listData);
+		JPanel selectPanel = new JPanel();
+		selectPanel.setBackground(Color.DARK_GRAY);
+		tabbedPane.addTab("Select Panel", null, selectPanel, null);
+ 		selectPanel.setLayout(new BorderLayout(0, 0));
+		JList list = new JList(cib.getMovieList());
 		list.setBorder(UIManager.getBorder("List.focusCellHighlightBorder"));
 		list.setBackground(Color.DARK_GRAY);
 		list.setForeground(Color.WHITE);
-		SelectPanel.add(list);
+		selectPanel.add(list);
 
 		JPanel selectButtonPanel = new JPanel();
 		selectButtonPanel.setBackground(Color.GRAY);
-		SelectPanel.add(selectButtonPanel, BorderLayout.SOUTH);
+		selectPanel.add(selectButtonPanel, BorderLayout.SOUTH);
 
 		JButton btnSelect = new JButton("Select");
 		selectButtonPanel.add(btnSelect);
