@@ -11,5 +11,6 @@ public class Configuration {
 	
 	// Server
 	public static final float SERVER_COMPRESSION_QAULITY = 0.3f;
+	public static final String MEDIA_DIRECTORY = "media";
 
 }

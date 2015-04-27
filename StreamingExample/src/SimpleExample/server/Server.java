@@ -22,7 +22,7 @@ public class Server {
 			ss = new ServerSocket(Configuration.COM_PORT);
 			while (true) {
 				Socket socket = ss.accept();
-				es.submit(new Streamer(socket, "media/sw.mp4"));
+				es.submit(new Streamer(socket));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

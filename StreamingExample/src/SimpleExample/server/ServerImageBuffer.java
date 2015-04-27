@@ -9,6 +9,7 @@ public class ServerImageBuffer {
 	private LinkedList<ImageBufferElement> images;
 	private boolean runStream = false;
 	private boolean streamOpen = true;
+	private String movieName;
 
 	public ServerImageBuffer() {
 		this.images = new LinkedList<ImageBufferElement>();
@@ -69,5 +70,21 @@ public class ServerImageBuffer {
 	
 	public synchronized boolean isStreamOpen(){
 		return streamOpen;
+	}
+
+	public synchronized String getMovieName() {
+		while(movieName == null || movieName.isEmpty()){
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return movieName;
+	}
+	
+	public synchronized void setMovieName(String movieName){
+		this.movieName = movieName;
+		notifyAll();
 	}
 }
