@@ -39,7 +39,7 @@ public class ClientGui {
 	private boolean fullscreen = false;
 	private int mouseClicks = 1;
 	private JPanel movieScreenPanel;
-
+	private JButton btnPlay;
 	/**
 	 * Launch the application.
 	 */
@@ -53,7 +53,8 @@ public class ClientGui {
 
 	/**
 	 * Initialize the contents of the frame.
-	 * @param progressBar 
+	 * 
+	 * @param progressBar
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -77,35 +78,37 @@ public class ClientGui {
 		movieScreenPanel.setBackground(Color.DARK_GRAY);
 		MainPanel.add(movieScreenPanel, BorderLayout.CENTER);
 		movieScreenPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-				JLabel movieScreen = new JLabel();
-				movieScreenPanel.add(movieScreen);
-				movieScreen.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						if(e.getClickCount() == 2){
-							if(!fullscreen){
-								frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-							}else{
-								frame.setExtendedState(JFrame.NORMAL);
-								
-							}
-							fullscreen = !fullscreen;
-						}
-//						System.out.println("Musklick paus kanske?");
-						if(mouseClicks%2 == 1){
-						cib.setPlayNotPause(false);
-						mouseClicks++;
-						}else{
-							cib.setPlayNotPause(true);
-							mouseClicks = 1;
-						}
-						//progressBar.setValue(progressBar.getValue() - 50);
-//						System.gc();
+
+		JLabel movieScreen = new JLabel();
+		movieScreenPanel.add(movieScreen);
+		movieScreen.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					if (!fullscreen) {
+						frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+					} else {
+						frame.setExtendedState(JFrame.NORMAL);
+
 					}
-				});
-				movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
-				this.label = movieScreen;
+					fullscreen = !fullscreen;
+				}
+				// System.out.println("Musklick paus kanske?");
+				if (mouseClicks % 2 == 1) {
+					cib.setPlayNotPause(false);
+					btnPlay.setText("Play");
+					mouseClicks++;
+				} else {
+					cib.setPlayNotPause(true);
+					btnPlay.setText("Pause");
+					mouseClicks = 1;
+				}
+				// progressBar.setValue(progressBar.getValue() - 50);
+				// System.gc();
+			}
+		});
+		movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
+		this.label = movieScreen;
 
 		JPanel buttonPanel = new JPanel();
 		MainPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -127,28 +130,27 @@ public class ClientGui {
 		progressBar.setBackground(Color.DARK_GRAY);
 		progressBar.setValue(0);
 
-
-		JButton btnPlay = new JButton("Play");
+		btnPlay = new JButton("Play");
 		actionPanel.add(btnPlay);
+		
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				System.out.println("Play pressed");
-				cib.setPlayNotPause(true);
-			}
-		});
-
-		JButton btnPause = new JButton("Pause");
-		actionPanel.add(btnPause);
-		btnPause.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-//				System.out.println("Pause pressed");
-				cib.setPlayNotPause(false);
+				// System.out.println("Play pressed");
+				if (cib.isPlaying()) {
+					btnPlay.setText("Play");
+				} else {
+					btnPlay.setText("Pause");
+				}
+				cib.setPlayNotPause(!cib.isPlaying());
 			}
 		});
 
 		JPanel exitPanel = new JPanel();
 		exitPanel.setBackground(Color.GRAY);
 		buttonPanel.add(exitPanel, BorderLayout.EAST);
+		
+		JButton btnConnect = new JButton("Connect");
+		exitPanel.add(btnConnect);
 
 		JButton btnExit = new JButton("Exit");
 		exitPanel.add(btnExit);
@@ -191,15 +193,18 @@ public class ClientGui {
 		if (firstImage) {
 			frame.setBounds(100, 100, image.getWidth(), image.getHeight() + 125);
 			frame.setLocationRelativeTo(null);
+			cib.setPlayNotPause(true);
 			firstImage = false;
 		}
-		if(fullscreen){
+		if (fullscreen) {
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			int width = (int)screenSize.getWidth();
-			int height = (int) (screenSize.getHeight()/1.3);
+			int width = (int) screenSize.getWidth();
+			int height = (int) (screenSize.getHeight() / 1.3);
 			label.setSize(width, height);
-			System.out.println("Size: " + label.getWidth() + " " + label.getHeight());
-			BufferedImage fullscreenImage = new BufferedImage(label.getWidth(),label.getHeight(),BufferedImage.TYPE_INT_RGB);
+			System.out.println("Size: " + label.getWidth() + " "
+					+ label.getHeight());
+			BufferedImage fullscreenImage = new BufferedImage(label.getWidth(),
+					label.getHeight(), BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = fullscreenImage.createGraphics();
 			g.drawImage(image, 0, 0, label.getWidth(), label.getHeight(), null);
 			g.dispose();
@@ -212,8 +217,8 @@ public class ClientGui {
 	public void setSocket(Socket socket) {
 		this.socket = socket;
 	}
-	
-	public void setImageBuffer(ClientImageBuffer cib){
+
+	public void setImageBuffer(ClientImageBuffer cib) {
 		this.cib = cib;
 	}
 
@@ -221,9 +226,6 @@ public class ClientGui {
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 			progressBar.setVisible(true);
-			if(bufferSize == Configuration.CLIENT_BUFFER_SIZE){
-				cib.setPlayNotPause(true);
-			}
 		}
 		procent.setText(bufferSize + " frames");
 	}
