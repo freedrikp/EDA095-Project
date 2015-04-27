@@ -18,4 +18,12 @@ public class ClientSender {
 	public synchronized void sendClose() throws IOException{
 		dos.writeByte(Protocol.CLOSE_STREAM);
 	}
+	
+	public synchronized void sendPlayStream() throws IOException{
+		dos.writeByte(Protocol.PLAY_STREAM);
+	}
+	
+	public synchronized void sendPauseStream() throws IOException{
+		dos.writeByte(Protocol.PAUSE_STREAM);
+	}
 }
