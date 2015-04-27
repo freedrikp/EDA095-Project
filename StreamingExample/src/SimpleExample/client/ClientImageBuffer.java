@@ -81,6 +81,7 @@ public class ClientImageBuffer {
 	}
 	
 	public synchronized boolean isPlaying(){
+		
 		return playNotPause;
 	}
 }
