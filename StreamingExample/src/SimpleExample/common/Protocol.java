@@ -10,8 +10,8 @@ public class Protocol {
 	
 	// Client => Server
 	public static final byte CLOSE_STREAM = 30;
-	public static final byte PLAY_STREAM = 30;
-	public static final byte PAUSE_STREAM = 31; 
+	public static final byte PLAY_STREAM = 31;
+	public static final byte PAUSE_STREAM = 32; 
 	
 	
 }
