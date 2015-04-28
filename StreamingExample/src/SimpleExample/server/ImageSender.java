@@ -15,10 +15,10 @@ import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
 public class ImageSender extends Thread {
-	private ServerImageBuffer monitor;
+	private ServerBuffer monitor;
 	private ServerSender ss;
 
-	public ImageSender(ServerImageBuffer monitor, ServerSender ss) {
+	public ImageSender(ServerBuffer monitor, ServerSender ss) {
 		super();
 		this.monitor = monitor;
 		this.ss = ss;
@@ -26,14 +26,16 @@ public class ImageSender extends Thread {
 
 	public void run() {
 		try {
-			while ((!monitor.finished() || monitor.hasMore()) && monitor.isStreamOpen() ) {
+			while ((!monitor.finished() || monitor.hasMoreFrames()) && monitor.isStreamOpen() ) {
 				ImageBufferElement image = monitor.getNextImage();
 				byte[] bytes = createBytesFromImage(image.getImage(),Configuration.SERVER_COMPRESSION_QAULITY);
 				if (bytes != null) {
 					ss.sendFrame(bytes, image.getTimestamp());
 				}
 			}
-			ss.sendEndOfStream();
+			if (!monitor.hasMoreSamples()){
+				ss.sendEndOfStream();
+			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

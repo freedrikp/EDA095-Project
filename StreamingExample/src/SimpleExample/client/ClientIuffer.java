@@ -2,28 +2,32 @@ package SimpleExample.client;
 
 import java.util.LinkedList;
 
+import SimpleExample.common.AudioBufferElement;
 import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
-public class ClientImageBuffer {
-	private LinkedList<ImageBufferElement> buffer;
+public class ClientIuffer {
+	private LinkedList<ImageBufferElement> images;
 	private boolean firstImage = true;
 	private boolean allFramesSent = false;
 	private boolean playNotPause = false;
 	private String[] movieList;
+	private LinkedList<AudioBufferElement> samples;
+	private boolean allSamplesSent = false;
 
-	public ClientImageBuffer() {
-		this.buffer = new LinkedList<ImageBufferElement>();
+	public ClientIuffer() {
+		this.images = new LinkedList<ImageBufferElement>();
+		samples = new LinkedList<AudioBufferElement>();
 	}
 
 	public synchronized void addImage(ImageBufferElement image) {
-		buffer.add(image);
+		images.add(image);
 		notifyAll();
 	}
 
 	public synchronized ImageBufferElement getImage() {
 		if (firstImage) {
-			while (buffer.size() < Configuration.CLIENT_BUFFER_SIZE) {
+			while (images.size() < Configuration.CLIENT_BUFFER_SIZE) {
 				try {
 					wait();
 				} catch (InterruptedException e) {
@@ -32,29 +36,29 @@ public class ClientImageBuffer {
 			}
 			firstImage = false;
 		}
-		while (buffer.isEmpty()) {
+		while (images.isEmpty()) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		return buffer.poll();
+		return images.poll();
 	}
 
 	public synchronized int getSize() {
-		return buffer.size();
+		return images.size();
 	}
 
 	public synchronized boolean moreToShow() {
-		while (!allFramesSent && buffer.isEmpty()) {
+		while (!allFramesSent && images.isEmpty()) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		return !allFramesSent || !buffer.isEmpty();
+		return !allFramesSent || !images.isEmpty();
 	}
 
 	public synchronized void setAllFramesSent(boolean allFramesSent) {
@@ -95,5 +99,36 @@ public class ClientImageBuffer {
 			}
 		}
 		return movieList;
+	}
+	
+	public synchronized void addSample(AudioBufferElement sample) {
+		samples.add(sample);
+		notifyAll();
+	}
+
+	public synchronized AudioBufferElement getSample() {
+		while (samples.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return samples.poll();
+	}
+
+	public synchronized int getSamplesSize() {
+		return samples.size();
+	}
+
+	public synchronized boolean moreToPlay() {
+		while (!allSamplesSent && samples.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return !allSamplesSent || !samples.isEmpty();
 	}
 }

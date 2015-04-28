@@ -38,7 +38,7 @@ public class ClientGui {
 	private JFrame frame;
 	private JProgressBar progressBar;
 	private JLabel nbrOfFrames;
-	private ClientImageBuffer cib;
+	private ClientIuffer cib;
 	private boolean fullscreen = false;
 	private int mouseClicks = 1;
 	private JPanel movieScreenPanel;
@@ -46,7 +46,6 @@ public class ClientGui {
 	private JButton btnStreamPlay;
 	private ClientSender cs;
 	private JList list;
-	private ClientAudioBuffer cab;
 	private boolean firstTimeBufferLoaded = true;
 	/**
 	 * Launch the application.
@@ -56,10 +55,9 @@ public class ClientGui {
 	 * Create the application.
 	 * @param cib 
 	 */
-	public ClientGui(ClientSender cs, ClientImageBuffer cib, ClientAudioBuffer cab) {
+	public ClientGui(ClientSender cs, ClientIuffer cib) {
 		this.cs = cs;
 		this.cib = cib;
-		this.cab = cab;
 		initialize();
 	}
 
@@ -108,11 +106,9 @@ public class ClientGui {
 				}
 				if (cib.isPlaying()) {
 					cib.setPlayNotPause(false);
-					cab.setPlayNotPause(false);
 					btnPlay.setText("Play");
 				} else {
 					cib.setPlayNotPause(true);
-					cab.setPlayNotPause(true);
 					btnPlay.setText("Pause");
 				}
 			}
@@ -152,7 +148,6 @@ public class ClientGui {
 					btnPlay.setText("Pause");
 				}
 				cib.setPlayNotPause(!cib.isPlaying());
-				cab.setPlayNotPause(!cab.isPlaying());
 			}
 		});
 
@@ -263,7 +258,6 @@ public class ClientGui {
 			progressBar.setValue(bufferSize);
 		}else if(firstTimeBufferLoaded){
 			cib.setPlayNotPause(true);
-			cab.setPlayNotPause(true);
 			btnPlay.setText("Pause");
 			btnPlay.setEnabled(true);
 			firstTimeBufferLoaded = false;

@@ -1,9 +1,12 @@
 package SimpleExample.client;
 
+import SimpleExample.common.AudioBufferElement;
+import SimpleExample.common.ImageBufferElement;
+
 public class ClientSoundPlayer extends Thread{
-	private ClientAudioBuffer cab;
+	private ClientIuffer cab;
 	
-	public ClientSoundPlayer(ClientAudioBuffer cab){
+	public ClientSoundPlayer(ClientIuffer cab){
 		super();
 		this.cab=cab;
 	}
@@ -11,11 +14,31 @@ public class ClientSoundPlayer extends Thread{
 	
 	public void run(){
 		System.out.println("sound player Running");
+		long previousTimestamp = 0;
+		long lastPlayed = 0;
 		while(cab.moreToPlay()){
 			cab.waitForPlay();	
-			byte[] b = cab.getSample();
-			playJavaSound(b, b.length);
+			AudioBufferElement b = cab.getSample();
+			long timestamp = b.getTimestamp();
+			try {
+				long timeToSleep = timestamp-previousTimestamp-(System.currentTimeMillis()-lastPlayed);
+				if (timeToSleep > 0){
+					Thread.sleep(timeToSleep);				
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			previousTimestamp = timestamp;
+			playJavaSound(b.getSample(), b.getSample().length);
+			lastPlayed = System.currentTimeMillis();
 		}
+		
+		
+		
+		
+		
+			
+		
 	}
 
 	private void playJavaSound(byte[] sample, int size){

@@ -44,4 +44,11 @@ public class ServerSender {
 			dos.writeUTF(s);
 		}
 	}
+	
+	public synchronized void sendSample(byte[] sample, long timestamp) throws IOException{
+		dos.writeByte(Protocol.SAMPLE_BEGIN);
+		dos.writeLong(timestamp);
+		dos.writeInt(sample.length);
+		dos.write(sample);
+	}
 }

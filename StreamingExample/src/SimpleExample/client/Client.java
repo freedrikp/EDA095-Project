@@ -15,7 +15,8 @@ import SimpleExample.common.ImageBufferElement;
 
 public class Client {
 public static SourceDataLine mLine;
-	private static void showMovie(ClientImageBuffer cib, ClientGui gui){
+	
+private static void showMovie(ClientIuffer cib, ClientGui gui){
 		long previousTimestamp = 0;
 		long lastShown = 0;
 		while (cib.moreToShow()) {
@@ -59,20 +60,16 @@ public static SourceDataLine mLine;
 
 		try {
 			Socket socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
-			Socket audioSocket = new Socket(Configuration.CLIENT_HOST, Configuration.AUDIO_COM_PORT);
 			ClientSender cs = new ClientSender(socket);
-			ClientImageBuffer cib = new ClientImageBuffer();
-			ClientAudioBuffer cab = new ClientAudioBuffer();
+			ClientIuffer cib = new ClientIuffer();
 			cs.sendGetMovieList();
 			ClientReceiver ir = new ClientReceiver(cib,socket);
-			ClientAudioReceiver car = new ClientAudioReceiver(cab, audioSocket);
 			ir.start();
-			car.start();
-			ClientGui gui = new ClientGui(cs,cib,cab);
+			ClientGui gui = new ClientGui(cs,cib);
 			ClientGuiUpdater ugui = new ClientGuiUpdater(gui);
 			ugui.start();
 			if(initAudio()){
-				ClientSoundPlayer soundPlayer = new ClientSoundPlayer(cab);
+				ClientSoundPlayer soundPlayer = new ClientSoundPlayer(cib);
 				soundPlayer.start();
 			}
 			gui.setSocket(socket);
