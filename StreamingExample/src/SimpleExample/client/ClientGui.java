@@ -27,9 +27,6 @@ import javax.swing.UIManager;
 
 import SimpleExample.common.Configuration;
 
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-
 public class ClientGui {
 
 	private JLabel label;
@@ -40,8 +37,6 @@ public class ClientGui {
 	private JLabel nbrOfFrames;
 	private ClientBuffer cib;
 	private boolean fullscreen = false;
-	private int mouseClicks = 1;
-	private JPanel movieScreenPanel;
 	private JButton btnPlay;
 	private JButton btnStreamPlay;
 	private ClientSender cs;
@@ -178,7 +173,7 @@ public class ClientGui {
 		exitPanel.add(btnExit);
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Exit pressed");
+//				System.out.println("Exit pressed");
 				try {
 					cs.sendClose();
 					socket.close();
@@ -193,10 +188,8 @@ public class ClientGui {
 		selectPanel.setBackground(Color.DARK_GRAY);
 		tabbedPane.addTab("Select Panel", null, selectPanel, null);
 		selectPanel.setLayout(new BorderLayout(0, 0));
-		System.out.println("CIB: " + cib);
 		
 		list = new JList(cib.getMovieList());
-		System.out.println("movieList hämtad");
 		list.setBorder(UIManager.getBorder("List.focusCellHighlightBorder"));
 		list.setBackground(Color.DARK_GRAY);
 		list.setForeground(Color.WHITE);
