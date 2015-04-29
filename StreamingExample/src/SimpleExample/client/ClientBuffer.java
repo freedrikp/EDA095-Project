@@ -29,16 +29,16 @@ public class ClientBuffer {
 	}
 
 	public synchronized ImageBufferElement getImage() {
-		if (firstImage) {
-			while (images.size() < Configuration.CLIENT_BUFFER_SIZE) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			firstImage = false;
-		}
+//		if (firstImage) {
+//			while (images.size() < Configuration.CLIENT_BUFFER_SIZE) {
+//				try {
+//					wait();
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			firstImage = false;
+//		}
 		while (images.isEmpty()) {
 			try {
 				wait();
