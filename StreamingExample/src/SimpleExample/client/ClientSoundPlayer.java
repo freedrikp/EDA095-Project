@@ -21,42 +21,45 @@ public class ClientSoundPlayer extends Thread {
 		
 
 			System.out.println("sound player Running");
-			long previousTimestamp = 0;
-			long lastPlayed = 0;
+//			long previousTimestamp = 0;
+//			long lastPlayed = 0;
+			SourceDataLine mLine = null;
 			while (cab.moreToPlay()) {
-				cab.waitForPlay();
+				long movieStart = cab.waitForPlay();
 				AudioBufferElement b = cab.getSample();
-				SourceDataLine mLine = null;
-			try {
-				AudioFormat audioFormat = new AudioFormat(b.getSampleRate(), b.getSampleSize(), b.getChannels(), true,
-						false);
-				DataLine.Info info = new DataLine.Info(SourceDataLine.class,
-						audioFormat);
-				mLine = (SourceDataLine) AudioSystem
-						.getLine(info);
-				mLine.open(audioFormat);
-				mLine.start();
-			} catch (Exception e) {
+				if (mLine == null){
+					try {
+						AudioFormat audioFormat = new AudioFormat(b.getSampleRate(), b.getSampleSize(), b.getChannels(), true,
+								false);
+						DataLine.Info info = new DataLine.Info(SourceDataLine.class,
+								audioFormat);
+						mLine = (SourceDataLine) AudioSystem
+								.getLine(info);
+						mLine.open(audioFormat);
+						mLine.start();
+					} catch (Exception e) {
 //				throw new RuntimeException("could not open audio line");
-				e.printStackTrace();
-			}
+						e.printStackTrace();
+					}
+				}
 
 				long timestamp = b.getTimestamp();
 				try {
-					long timeToSleep = timestamp - previousTimestamp
-							- (System.currentTimeMillis() - lastPlayed);
+//					long timeToSleep = timestamp - previousTimestamp
+//							- (System.currentTimeMillis() - lastPlayed);
+					long timeToSleep = timestamp - System.currentTimeMillis() + movieStart;
 					if (timeToSleep > 0) {
 						Thread.sleep(timeToSleep);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				previousTimestamp = timestamp;
+//				previousTimestamp = timestamp;
 				// playJavaSound(b.getSample(), b.getSample().length);
 				if (mLine != null){
 					mLine.write(b.getSample(), 0, b.getSample().length);					
 				}
-				lastPlayed = System.currentTimeMillis();
+//				lastPlayed = System.currentTimeMillis();
 			}
 		
 	}

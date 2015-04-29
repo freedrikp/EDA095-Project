@@ -14,6 +14,7 @@ public class ClientBuffer {
 	private String[] movieList;
 	private LinkedList<AudioBufferElement> samples;
 	private boolean allSamplesSent = false;
+	private long movieStart = 0;
 
 	public ClientBuffer() {
 		this.images = new LinkedList<ImageBufferElement>();
@@ -67,11 +68,14 @@ public class ClientBuffer {
 	}
 
 	public synchronized void setPlayNotPause(boolean playNotPause) {
+		if (movieStart == 0){
+			movieStart = System.currentTimeMillis();
+		}
 		this.playNotPause = playNotPause;
 		notifyAll();
 	}
 
-	public synchronized void waitForPlay() {
+	public synchronized long waitForPlay() {
 		while (!playNotPause) {
 			try {
 				wait();
@@ -79,6 +83,7 @@ public class ClientBuffer {
 				e.printStackTrace();
 			}
 		}
+		return movieStart;
 	}
 
 	public synchronized boolean isPlaying() {

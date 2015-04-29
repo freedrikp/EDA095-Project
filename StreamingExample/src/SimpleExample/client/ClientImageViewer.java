@@ -12,24 +12,25 @@ public class ClientImageViewer extends Thread {
 	}
 
 	public void run() {
-		long previousTimestamp = 0;
-		long lastShown = 0;
+//		long previousTimestamp = 0;
+//		long lastShown = 0;
 		while (cb.moreToShow()) {
-			cb.waitForPlay();
+			long movieStart = cb.waitForPlay();
 			ImageBufferElement image = cb.getImage();
 			long timestamp = image.getTimestamp();
 			try {
-				long timeToSleep = timestamp - previousTimestamp
-						- (System.currentTimeMillis() - lastShown);
+//				long timeToSleep = timestamp - previousTimestamp
+//						- (System.currentTimeMillis() - lastShown);
+				long timeToSleep = timestamp - System.currentTimeMillis() + movieStart;
 				if (timeToSleep > 0) {
 					Thread.sleep(timeToSleep);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			previousTimestamp = timestamp;
+//			previousTimestamp = timestamp;
 			gui.setImage(image.getImage());
-			lastShown = System.currentTimeMillis();
+//			lastShown = System.currentTimeMillis();
 		}
 	}
 }
