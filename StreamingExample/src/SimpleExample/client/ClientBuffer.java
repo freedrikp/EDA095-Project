@@ -8,7 +8,7 @@ import SimpleExample.common.ImageBufferElement;
 
 public class ClientBuffer {
 	private LinkedList<ImageBufferElement> images;
-	private boolean firstImage = true;
+//	private boolean firstImage = true;
 	private boolean allFramesSent = false;
 	private boolean playNotPause = false;
 	private String[] movieList;
