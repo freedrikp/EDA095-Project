@@ -180,7 +180,7 @@ public class ClientGui {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Exit pressed");
 				try {
-
+					cs.sendClose();
 					socket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();

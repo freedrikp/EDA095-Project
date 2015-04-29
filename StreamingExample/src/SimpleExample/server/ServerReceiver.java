@@ -23,7 +23,7 @@ public class ServerReceiver extends Thread {
 	public void run(){
 		try{
 			byte command = 0;
-			while (buffer.isStreamOpen() && command != Protocol.STREAM_END) {
+			while (buffer.isStreamOpen() && command != Protocol.CLOSE_STREAM) {
 				command = dis.readByte();
 				switch (command) {
 				case Protocol.PLAY_STREAM:
