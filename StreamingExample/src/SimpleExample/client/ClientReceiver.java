@@ -89,11 +89,14 @@ public class ClientReceiver extends Thread {
 	private void receiveSample() {
 		try {
 			long timestamp = dis.readLong();
+			float sampleRate = dis.readFloat();
+			int sampleSize = dis.readInt();
+			int channels = dis.readInt();
 			int length = dis.readInt();
 			byte[] bytes = new byte[length];
 			dis.readFully(bytes);
 			cib.addSample(new AudioBufferElement(bytes,
-					timestamp));
+					timestamp,sampleRate,sampleSize,channels));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

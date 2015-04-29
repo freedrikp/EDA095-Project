@@ -29,7 +29,7 @@ public class ServerListener extends MediaListenerAdapter {
 		//System.out.println("channels: " + aSamples.getChannels());
 		if(aSamples.isComplete()){
 			byte[] rawBytes = aSamples.getData().getByteArray(0, aSamples.getSize());
-			monitor.addSample(new AudioBufferElement(rawBytes,event.getTimeStamp()/1000));
+			monitor.addSample(new AudioBufferElement(rawBytes,event.getTimeStamp()/1000,(float)aSamples.getSampleRate(),((int)aSamples.getSampleSize())*8/aSamples.getChannels(),aSamples.getChannels()));
 		}
 	}
 

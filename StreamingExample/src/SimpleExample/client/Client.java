@@ -14,28 +14,28 @@ import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
 public class Client {
-public static SourceDataLine mLine;
+//public static SourceDataLine mLine;
 	
 
 	
 	
-	private static boolean initAudio(){
-		//This is taken straight from sw.mp4, should be sent through socket.
-		AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
-		DataLine.Info info = new DataLine.Info(SourceDataLine.class,
-				audioFormat);
-		try {
-			mLine = (SourceDataLine) AudioSystem
-					.getLine(info);
-			mLine.open(audioFormat);
-			mLine.start();
-			return true;
-			
-		} catch (LineUnavailableException e) {
-			throw new RuntimeException("could not open audio line");
-			
-		}
-	}
+//	private static boolean initAudio(){
+//		//This is taken straight from sw.mp4, should be sent through socket.
+//		AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, false);
+//		DataLine.Info info = new DataLine.Info(SourceDataLine.class,
+//				audioFormat);
+//		try {
+//			mLine = (SourceDataLine) AudioSystem
+//					.getLine(info);
+//			mLine.open(audioFormat);
+//			mLine.start();
+//			return true;
+//			
+//		} catch (LineUnavailableException e) {
+//			throw new RuntimeException("could not open audio line");
+//			
+//		}
+//	}
 
 	public static void main(String[] args) {
 
@@ -49,10 +49,10 @@ public static SourceDataLine mLine;
 			ClientGui gui = new ClientGui(cs,cib);
 			ClientGuiUpdater ugui = new ClientGuiUpdater(gui);
 			ugui.start();
-			if(initAudio()){
+//			if(initAudio()){
 				ClientSoundPlayer soundPlayer = new ClientSoundPlayer(cib);
 				soundPlayer.start();
-			}
+//			}
 			gui.setSocket(socket);
 			ClientImageViewer civ = new ClientImageViewer(cib,gui);
 			civ.start();
