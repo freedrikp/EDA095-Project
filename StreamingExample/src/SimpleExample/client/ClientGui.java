@@ -38,7 +38,7 @@ public class ClientGui {
 	private JFrame frame;
 	private JProgressBar progressBar;
 	private JLabel nbrOfFrames;
-	private ClientIuffer cib;
+	private ClientBuffer cib;
 	private boolean fullscreen = false;
 	private int mouseClicks = 1;
 	private JPanel movieScreenPanel;
@@ -55,7 +55,7 @@ public class ClientGui {
 	 * Create the application.
 	 * @param cib 
 	 */
-	public ClientGui(ClientSender cs, ClientIuffer cib) {
+	public ClientGui(ClientSender cs, ClientBuffer cib) {
 		this.cs = cs;
 		this.cib = cib;
 		initialize();

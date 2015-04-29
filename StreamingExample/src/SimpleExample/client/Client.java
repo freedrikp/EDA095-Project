@@ -16,26 +16,7 @@ import SimpleExample.common.ImageBufferElement;
 public class Client {
 public static SourceDataLine mLine;
 	
-private static void showMovie(ClientIuffer cib, ClientGui gui){
-		long previousTimestamp = 0;
-		long lastShown = 0;
-		while (cib.moreToShow()) {
-			cib.waitForPlay();
-			ImageBufferElement image = cib.getImage();
-			long timestamp = image.getTimestamp();
-			try {
-				long timeToSleep = timestamp-previousTimestamp-(System.currentTimeMillis()-lastShown);
-				if (timeToSleep > 0){
-					Thread.sleep(timeToSleep);				
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			previousTimestamp = timestamp;
-			gui.setImage(image.getImage());
-			lastShown = System.currentTimeMillis();
-		}
-	}
+
 	
 	
 	private static boolean initAudio(){
@@ -61,7 +42,7 @@ private static void showMovie(ClientIuffer cib, ClientGui gui){
 		try {
 			Socket socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
 			ClientSender cs = new ClientSender(socket);
-			ClientIuffer cib = new ClientIuffer();
+			ClientBuffer cib = new ClientBuffer();
 			cs.sendGetMovieList();
 			ClientReceiver ir = new ClientReceiver(cib,socket);
 			ir.start();
@@ -73,7 +54,8 @@ private static void showMovie(ClientIuffer cib, ClientGui gui){
 				soundPlayer.start();
 			}
 			gui.setSocket(socket);
-			showMovie(cib,gui);
+			ClientImageViewer civ = new ClientImageViewer(cib,gui);
+			civ.start();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

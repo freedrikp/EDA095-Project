@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import SimpleExample.client.ClientIuffer;
+import SimpleExample.client.ClientBuffer;
 import SimpleExample.common.Protocol;
 
 public class ServerReceiver extends Thread {

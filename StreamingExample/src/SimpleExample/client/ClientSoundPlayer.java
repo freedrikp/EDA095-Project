@@ -4,9 +4,9 @@ import SimpleExample.common.AudioBufferElement;
 import SimpleExample.common.ImageBufferElement;
 
 public class ClientSoundPlayer extends Thread{
-	private ClientIuffer cab;
+	private ClientBuffer cab;
 	
-	public ClientSoundPlayer(ClientIuffer cab){
+	public ClientSoundPlayer(ClientBuffer cab){
 		super();
 		this.cab=cab;
 	}

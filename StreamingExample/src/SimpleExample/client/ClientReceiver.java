@@ -14,11 +14,11 @@ import SimpleExample.common.Protocol;
 
 public class ClientReceiver extends Thread {
 
-	private ClientIuffer cib;
+	private ClientBuffer cib;
 	private Socket socket;
 	private DataInputStream dis;
 
-	public ClientReceiver(ClientIuffer cib, Socket socket) throws IOException {
+	public ClientReceiver(ClientBuffer cib, Socket socket) throws IOException {
 		this.cib = cib;
 		this.socket = socket;
 		this.dis = new DataInputStream(socket.getInputStream());

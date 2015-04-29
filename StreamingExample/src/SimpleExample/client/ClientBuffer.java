@@ -6,7 +6,7 @@ import SimpleExample.common.AudioBufferElement;
 import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
-public class ClientIuffer {
+public class ClientBuffer {
 	private LinkedList<ImageBufferElement> images;
 	private boolean firstImage = true;
 	private boolean allFramesSent = false;
@@ -15,7 +15,7 @@ public class ClientIuffer {
 	private LinkedList<AudioBufferElement> samples;
 	private boolean allSamplesSent = false;
 
-	public ClientIuffer() {
+	public ClientBuffer() {
 		this.images = new LinkedList<ImageBufferElement>();
 		samples = new LinkedList<AudioBufferElement>();
 	}
