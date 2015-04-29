@@ -14,14 +14,18 @@ public class ClientImageViewer extends Thread {
 	public void run() {
 //		long previousTimestamp = 0;
 //		long lastShown = 0;
+		long pausTime = 0;
 		while (cb.moreToShow()) {
+			long tmp = System.currentTimeMillis();
 			long movieStart = cb.waitForPlay();
+//			long pausTime = cb.getPausTime();
 			ImageBufferElement image = cb.getImage();
+			pausTime += System.currentTimeMillis()-tmp;
 			long timestamp = image.getTimestamp();
 			try {
 //				long timeToSleep = timestamp - previousTimestamp
 //						- (System.currentTimeMillis() - lastShown);
-				long timeToSleep = timestamp - System.currentTimeMillis() + movieStart;
+				long timeToSleep = timestamp + pausTime - System.currentTimeMillis() + movieStart;
 				if (timeToSleep > 0) {
 					Thread.sleep(timeToSleep);
 				}

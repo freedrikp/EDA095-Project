@@ -23,10 +23,14 @@ public class ClientSoundPlayer extends Thread {
 			System.out.println("sound player Running");
 //			long previousTimestamp = 0;
 //			long lastPlayed = 0;
+			long pausTime = 0;
 			SourceDataLine mLine = null;
 			while (cab.moreToPlay()) {
+				long tmp = System.currentTimeMillis();
 				long movieStart = cab.waitForPlay();
+//				long pausTime = cab.getPausTime();
 				AudioBufferElement b = cab.getSample();
+				pausTime += System.currentTimeMillis()-tmp;
 				if (mLine == null){
 					try {
 						AudioFormat audioFormat = new AudioFormat(b.getSampleRate(), b.getSampleSize(), b.getChannels(), true,
@@ -47,9 +51,11 @@ public class ClientSoundPlayer extends Thread {
 				try {
 //					long timeToSleep = timestamp - previousTimestamp
 //							- (System.currentTimeMillis() - lastPlayed);
-					long timeToSleep = timestamp - System.currentTimeMillis() + movieStart;
+					long timeToSleep = timestamp + pausTime - System.currentTimeMillis() + movieStart;
 					if (timeToSleep > 0) {
 						Thread.sleep(timeToSleep);
+					}else{
+						continue;
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();

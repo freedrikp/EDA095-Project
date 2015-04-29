@@ -15,6 +15,8 @@ public class ClientBuffer {
 	private LinkedList<AudioBufferElement> samples;
 	private boolean allSamplesSent = false;
 	private long movieStart = 0;
+//	private long pausTime = 0;
+//	private long tmpTimestamp;
 
 	public ClientBuffer() {
 		this.images = new LinkedList<ImageBufferElement>();
@@ -71,6 +73,13 @@ public class ClientBuffer {
 		if (movieStart == 0){
 			movieStart = System.currentTimeMillis();
 		}
+//		if (this.playNotPause){
+//			tmpTimestamp = System.currentTimeMillis();
+//		}else{
+//			if (tmpTimestamp > 0){
+//				pausTime += System.currentTimeMillis() - tmpTimestamp;
+//			}
+//		}
 		this.playNotPause = playNotPause;
 		notifyAll();
 	}
@@ -136,4 +145,8 @@ public class ClientBuffer {
 		}
 		return !allSamplesSent || !samples.isEmpty();
 	}
+	
+//	public synchronized long getPausTime(){
+//		return pausTime;
+//	}
 }
