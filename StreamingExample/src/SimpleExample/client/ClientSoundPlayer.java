@@ -25,12 +25,17 @@ public class ClientSoundPlayer extends Thread {
 //			long lastPlayed = 0;
 			long pausTime = 0;
 			SourceDataLine mLine = null;
+			boolean firstTime = true;
 			while (cab.moreToPlay()) {
 				long tmp = System.currentTimeMillis();
 				long movieStart = cab.waitForPlay();
 //				long pausTime = cab.getPausTime();
 				AudioBufferElement b = cab.getSample();
-				pausTime += System.currentTimeMillis()-tmp;
+				if (!firstTime){
+					pausTime += System.currentTimeMillis()-tmp;
+				}else{
+					firstTime = false;
+				}
 				if (mLine == null){
 					try {
 						AudioFormat audioFormat = new AudioFormat(b.getSampleRate(), b.getSampleSize(), b.getChannels(), true,
