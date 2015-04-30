@@ -145,6 +145,16 @@ public class ClientBuffer {
 		}
 		return !allSamplesSent || !samples.isEmpty();
 	}
+
+	public synchronized void reset() {
+		images.clear();
+		allFramesSent = false;
+		playNotPause = false;
+		samples.clear();
+		allSamplesSent = false;
+		movieStart = 0;
+		notifyAll();
+	}
 	
 //	public synchronized long getPausTime(){
 //		return pausTime;

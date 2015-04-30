@@ -29,7 +29,17 @@ public class Streamer implements Runnable {
 			String movie = monitor.getMovieName();
 			IMediaReader reader = ToolFactory.makeReader(Configuration.MEDIA_DIRECTORY+"/"+movie);
 			reader.addListener(sl);
+			int counter = 0;
 			do{
+				if (counter == Configuration.BLOCK_SIZE){
+					try {
+						Thread.sleep(Configuration.SERVER_WAIT_TIME);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					counter = 0;
+				}
+				counter++;
 				monitor.waitForRunStream();
 			}while (reader.readPacket() == null && monitor.isStreamOpen());
 			monitor.closeIt();

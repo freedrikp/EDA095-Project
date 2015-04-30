@@ -26,9 +26,15 @@ public class ClientSoundPlayer extends Thread {
 			long pausTime = 0;
 			SourceDataLine mLine = null;
 			boolean firstTime = true;
+			long savedStart = 0;
 			while (cab.moreToPlay()) {
 				long tmp = System.currentTimeMillis();
 				long movieStart = cab.waitForPlay();
+				if (savedStart == 0){
+					savedStart = movieStart;
+				}else if (savedStart != movieStart){
+					break;
+				}
 //				long pausTime = cab.getPausTime();
 				AudioBufferElement b = cab.getSample();
 				if (!firstTime){

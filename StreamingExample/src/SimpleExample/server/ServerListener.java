@@ -25,21 +25,24 @@ public class ServerListener extends MediaListenerAdapter {
 	public void onAudioSamples(IAudioSamplesEvent event) {
 		IAudioSamples aSamples = event.getAudioSamples();
 		//System.out.println("samplerate: " + aSamples.getSampleRate());
-		//System.out.println("sampleSize for format in bits: " + IAudioSamples.findSampleBitDepth(aSamples.getFormat()));
+//		System.out.println("sampleSize for format in bits: " + IAudioSamples.findSampleBitDepth(aSamples.getFormat()));
 		//System.out.println("channels: " + aSamples.getChannels());
 		if(aSamples.isComplete()){
 			byte[] rawBytes = aSamples.getData().getByteArray(0, aSamples.getSize());
-			monitor.addSample(new AudioBufferElement(rawBytes,event.getTimeStamp()/1000,(float)aSamples.getSampleRate(),((int)aSamples.getSampleSize())*8/aSamples.getChannels(),aSamples.getChannels()));
+			monitor.addSample(new AudioBufferElement(rawBytes,event.getTimeStamp()/1000,(float)aSamples.getSampleRate(),(int)IAudioSamples.findSampleBitDepth(aSamples.getFormat()),aSamples.getChannels()));
 		}
+		event.getMediaData().delete();
 	}
 
 	@Override
 	public void onVideoPicture(IVideoPictureEvent event) {
-		BufferedImage bi = ConverterFactory.createConverter(
-				ConverterFactory.XUGGLER_BGR_24, event.getMediaData()).toImage(
-				event.getMediaData());
-		monitor.addImage(new ImageBufferElement(bi,event.getTimeStamp()/1000));
-
+		if (event.getMediaData().isComplete()){
+			BufferedImage bi = ConverterFactory.createConverter(
+					ConverterFactory.XUGGLER_BGR_24, event.getMediaData()).toImage(
+							event.getMediaData());
+			monitor.addImage(new ImageBufferElement(bi,event.getTimeStamp()/1000));			
+		}
+		event.getMediaData().delete();
 	}
 
 }

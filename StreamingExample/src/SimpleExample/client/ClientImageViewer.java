@@ -16,9 +16,15 @@ public class ClientImageViewer extends Thread {
 //		long lastShown = 0;
 		long pausTime = 0;
 		boolean firstTime = true;
+		long savedStart = 0;
 		while (cb.moreToShow()) {
 			long tmp = System.currentTimeMillis();
 			long movieStart = cb.waitForPlay();
+			if (savedStart == 0){
+				savedStart = movieStart;
+			}else if (savedStart != movieStart){
+				break;
+			}
 //			long pausTime = cb.getPausTime();
 			ImageBufferElement image = cb.getImage();
 			if (!firstTime){

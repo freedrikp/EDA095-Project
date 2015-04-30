@@ -3,6 +3,7 @@ package SimpleExample.server;
 import java.util.LinkedList;
 
 import SimpleExample.common.AudioBufferElement;
+import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
 public class ServerBuffer {
@@ -112,6 +113,16 @@ public class ServerBuffer {
 			return true;
 		}else{
 			return false;
+		}
+	}
+	
+	public synchronized void waitForBuffer(){
+		while(images.size() > Configuration.SERVER_BUFFER_SIZE){
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

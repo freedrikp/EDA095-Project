@@ -33,7 +33,8 @@ public class ServerReceiver extends Thread {
 					buffer.setRunStream(false);
 					break;
 				case Protocol.CLOSE_STREAM:
-					buffer.setStreamOpen(false);
+					buffer.setStreamOpen(false);					
+					buffer.setRunStream(true);
 					break;
 				case Protocol.GIVE_MOVIE_LIST:
 					ss.sendMovieList();

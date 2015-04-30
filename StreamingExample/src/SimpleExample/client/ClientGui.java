@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -42,6 +43,7 @@ public class ClientGui {
 	private ClientSender cs;
 	private JList list;
 	private boolean firstTimeBufferLoaded = true;
+	private boolean firstSelect = true;
 	/**
 	 * Launch the application.
 	 */
@@ -184,7 +186,7 @@ public class ClientGui {
 			}
 		});
 
-		JPanel selectPanel = new JPanel();
+		final JPanel selectPanel = new JPanel();
 		selectPanel.setBackground(Color.DARK_GRAY);
 		tabbedPane.addTab("Select Panel", null, selectPanel, null);
 		selectPanel.setLayout(new BorderLayout(0, 0));
@@ -203,6 +205,11 @@ public class ClientGui {
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if (!firstSelect){
+						startNewMovie();
+					}else{
+						firstSelect = false;
+					}
 					cs.sendTitle(list.getSelectedValue().toString());
 					btnStreamPlay.setEnabled(true);
 				} catch (IOException e1) {
@@ -256,5 +263,21 @@ public class ClientGui {
 			firstTimeBufferLoaded = false;
 		}
 		nbrOfFrames.setText(bufferSize + " frames");
+	}
+	
+	private void startNewMovie() throws UnknownHostException, IOException{
+		cs.sendClose();
+		socket.close();
+		socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
+		cs.setSocket(socket);
+		cib.reset();
+		new ClientReceiver(cib,socket).start();
+		firstImage = true;
+		firstTimeBufferLoaded = true;
+		btnStreamPlay.setText("Start stream");
+		btnPlay.setText("Play");
+		btnPlay.setEnabled(false);
+		new ClientImageViewer(cib,this).start();
+		new ClientSoundPlayer(cib).start();
 	}
 }
