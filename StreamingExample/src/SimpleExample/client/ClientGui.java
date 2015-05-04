@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -35,14 +36,14 @@ public class ClientGui {
 	private JFrame frame;
 	private JProgressBar progressBar;
 	private JLabel nbrOfFrames;
-	private ClientImageBuffer cib;
+	private ClientBuffer cib;
 	private boolean fullscreen = false;
 	private JButton btnPlay;
 	private JButton btnStreamPlay;
 	private ClientSender cs;
 	private JList list;
-	private ClientAudioBuffer cab;
 	private boolean firstTimeBufferLoaded = true;
+	private boolean firstSelect = true;
 	/**
 	 * Launch the application.
 	 */
@@ -51,10 +52,9 @@ public class ClientGui {
 	 * Create the application.
 	 * @param cib 
 	 */
-	public ClientGui(ClientSender cs, ClientImageBuffer cib, ClientAudioBuffer cab) {
+	public ClientGui(ClientSender cs, ClientBuffer cib) {
 		this.cs = cs;
 		this.cib = cib;
-		this.cab = cab;
 		initialize();
 	}
 
@@ -103,11 +103,9 @@ public class ClientGui {
 				}
 				if (cib.isPlaying()) {
 					cib.setPlayNotPause(false);
-					cab.setPlayNotPause(false);
 					btnPlay.setText("Play");
 				} else {
 					cib.setPlayNotPause(true);
-					cab.setPlayNotPause(true);
 					btnPlay.setText("Pause");
 				}
 			}
@@ -147,7 +145,6 @@ public class ClientGui {
 					btnPlay.setText("Pause");
 				}
 				cib.setPlayNotPause(!cib.isPlaying());
-				cab.setPlayNotPause(!cab.isPlaying());
 			}
 		});
 
@@ -180,7 +177,7 @@ public class ClientGui {
 			public void actionPerformed(ActionEvent e) {
 //				System.out.println("Exit pressed");
 				try {
-
+					cs.sendClose();
 					socket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -189,7 +186,7 @@ public class ClientGui {
 			}
 		});
 
-		JPanel selectPanel = new JPanel();
+		final JPanel selectPanel = new JPanel();
 		selectPanel.setBackground(Color.DARK_GRAY);
 		tabbedPane.addTab("Select Panel", null, selectPanel, null);
 		selectPanel.setLayout(new BorderLayout(0, 0));
@@ -208,6 +205,11 @@ public class ClientGui {
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if (!firstSelect){
+						startNewMovie();
+					}else{
+						firstSelect = false;
+					}
 					cs.sendTitle(list.getSelectedValue().toString());
 					btnStreamPlay.setEnabled(true);
 				} catch (IOException e1) {
@@ -256,11 +258,26 @@ public class ClientGui {
 			progressBar.setValue(bufferSize);
 		}else if(firstTimeBufferLoaded){
 			cib.setPlayNotPause(true);
-			cab.setPlayNotPause(true);
 			btnPlay.setText("Pause");
 			btnPlay.setEnabled(true);
 			firstTimeBufferLoaded = false;
 		}
 		nbrOfFrames.setText(bufferSize + " frames");
+	}
+	
+	private void startNewMovie() throws UnknownHostException, IOException{
+		cs.sendClose();
+		socket.close();
+		socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
+		cs.setSocket(socket);
+		cib.reset();
+		new ClientReceiver(cib,socket).start();
+		firstImage = true;
+		firstTimeBufferLoaded = true;
+		btnStreamPlay.setText("Start stream");
+		btnPlay.setText("Play");
+		btnPlay.setEnabled(false);
+		new ClientImageViewer(cib,this).start();
+		new ClientSoundPlayer(cib).start();
 	}
 }

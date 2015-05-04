@@ -35,4 +35,9 @@ public class ClientSender {
 		dos.writeByte(Protocol.CHOSEN_TITLE);
 		dos.writeUTF(title);
 	}
+
+	public void setSocket(Socket socket) throws IOException {
+		this.socket = socket;
+		dos = new DataOutputStream(socket.getOutputStream());
+	}
 }

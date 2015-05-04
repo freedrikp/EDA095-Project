@@ -4,19 +4,17 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import SimpleExample.client.ClientImageBuffer;
+import SimpleExample.client.ClientBuffer;
 import SimpleExample.common.Protocol;
 
 public class ServerReceiver extends Thread {
-	private ServerImageBuffer buffer;
+	private ServerBuffer buffer;
 	private Socket socket;
 	private DataInputStream dis;
 	private ServerSender ss;
-	private ServerAudioBuffer audioBuffer;
 
-	public ServerReceiver(ServerImageBuffer buffer, ServerAudioBuffer audioBuffer, Socket socket, ServerSender ss) throws IOException {
+	public ServerReceiver(ServerBuffer buffer, Socket socket, ServerSender ss) throws IOException {
 		this.buffer = buffer;
-		this.audioBuffer = audioBuffer;
 		this.socket = socket;
 		this.ss = ss;
 		this.dis = new DataInputStream(socket.getInputStream());
@@ -25,20 +23,18 @@ public class ServerReceiver extends Thread {
 	public void run(){
 		try{
 			byte command = 0;
-			while (buffer.isStreamOpen() && command != Protocol.STREAM_END) {
+			while (buffer.isStreamOpen() && command != Protocol.CLOSE_STREAM) {
 				command = dis.readByte();
 				switch (command) {
 				case Protocol.PLAY_STREAM:
 					buffer.setRunStream(true);
-					audioBuffer.setRunStream(true);
 					break;
 				case Protocol.PAUSE_STREAM:
 					buffer.setRunStream(false);
-					audioBuffer.setRunStream(false);
 					break;
 				case Protocol.CLOSE_STREAM:
-					buffer.setStreamOpen(false);
-					audioBuffer.setStreamOpen(false);
+					buffer.setStreamOpen(false);					
+					buffer.setRunStream(true);
 					break;
 				case Protocol.GIVE_MOVIE_LIST:
 					ss.sendMovieList();

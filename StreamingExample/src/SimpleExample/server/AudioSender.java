@@ -1,41 +1,31 @@
 package SimpleExample.server;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+
+import SimpleExample.common.AudioBufferElement;
 
 public class AudioSender extends Thread {
-	private ServerAudioBuffer monitor;
-	private Socket socket;
+	private ServerBuffer monitor;
+	private ServerSender ss;
 
-	public AudioSender(ServerAudioBuffer monitor, Socket socket) {
+	public AudioSender(ServerBuffer monitor, ServerSender ss) {
 		super();
 		this.monitor = monitor;
-		this.socket = socket;
-		if(socket == null){
-			System.out.println("why null? :(");
-		}
+		this.ss = ss;
 	}
 
 	public void run() {
-		DataOutputStream dos;
 		try {
-			dos = new DataOutputStream(socket.getOutputStream());
-			while ((!monitor.finished() || monitor.hasMore()) && monitor.isStreamOpen() ) {
-				byte[] bytes = monitor.getNextSample();
-				if (bytes != null){
-						//System.out.println("writing to audio output stream");
-						dos.writeInt(bytes.length);
-						//System.out.println("wrote " + bytes.length);
-						dos.write(bytes);
-						//System.out.println("Send audio of size " + bytes.length);
-				}else{
-					//System.out.println("writing zero 0");
-					dos.writeInt(0);
+			while ((!monitor.finished() || monitor.hasMoreSamples()) && monitor.isStreamOpen() ) {
+				AudioBufferElement abe = monitor.getNextSample();
+				if (abe.getSample() != null){
+						ss.sendSample(abe.getSample(),abe.getTimestamp(),abe.getSampleRate(),abe.getSampleSize(),abe.getChannels());
 				}
 			}
 			System.out.println("Done sending audio");
-			socket.close();
+			if (!monitor.hasMoreFrames()){
+				ss.sendEndOfStream();
+			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

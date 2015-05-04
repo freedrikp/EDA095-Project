@@ -8,16 +8,17 @@ import java.net.Socket;
 
 import javax.imageio.ImageIO;
 
+import SimpleExample.common.AudioBufferElement;
 import SimpleExample.common.ImageBufferElement;
 import SimpleExample.common.Protocol;
 
 public class ClientReceiver extends Thread {
 
-	private ClientImageBuffer cib;
+	private ClientBuffer cib;
 	private Socket socket;
 	private DataInputStream dis;
 
-	public ClientReceiver(ClientImageBuffer cib, Socket socket) throws IOException {
+	public ClientReceiver(ClientBuffer cib, Socket socket) throws IOException {
 		this.cib = cib;
 		this.socket = socket;
 		this.dis = new DataInputStream(socket.getInputStream());
@@ -39,6 +40,9 @@ public class ClientReceiver extends Thread {
 				case Protocol.LIST_START:
 					receiveMovieList();
 					break;
+				case Protocol.SAMPLE_BEGIN:
+					receiveSample();
+					break;
 				default:
 					System.out.println("Unknown command from server");
 				}
@@ -48,6 +52,7 @@ public class ClientReceiver extends Thread {
 			e.printStackTrace();
 		}
 	}
+
 
 	private void receiveMovieList() throws IOException {
 		int size = dis.readInt();
@@ -81,4 +86,20 @@ public class ClientReceiver extends Thread {
 		return null;
 	}
 
+	private void receiveSample() {
+		try {
+			long timestamp = dis.readLong();
+			float sampleRate = dis.readFloat();
+			int sampleSize = dis.readInt();
+			int channels = dis.readInt();
+			int length = dis.readInt();
+			byte[] bytes = new byte[length];
+			dis.readFully(bytes);
+			cib.addSample(new AudioBufferElement(bytes,
+					timestamp,sampleRate,sampleSize,channels));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }
