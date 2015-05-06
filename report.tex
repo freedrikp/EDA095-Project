@@ -1,0 +1,60 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{moreverb}
+\usepackage{graphicx}
+\title{Project Report \\ EDA095 Network Programming}
+\date{\today}
+\author{Fredrik Paulsson \\ dat11fp1@student.lu.se \and Jonas Jacobsson \\ dat11jja@student.lu.se \and Artur Matulaniec \\ dat11ama@student.lu.se \and Magnus Törnquist \\ ada08mto@student.lu.se}
+%\setcounter{secnumdepth}{5}
+%\setcounter{tocdepth}{5}
+\begin{document}
+\maketitle
+%\tableofcontents
+
+\section{Introduction}
+The project in this course did not contain a specific task that was to be done. Rather the only demand was that the content of the course was to be of central focus in the project.
+
+Since the course was about network programming we decided that our project were to be based on video streaming. Basically we wanted to stream video from a server to a client. At first we wanted to implement the server part using well-known protocols such as RTSP/RTCP/RTP and then connect our server to an already existing client such as VLC.
+
+However, later on we decided to skip these existing protocols and implement our own client/server solution using a simple protocol that we ourselves defined.
+
+This report will serve as documentation of our project work.
+
+\section{Implementing a server using RTSP}
+Här förklarar vi varför vi bytte fokus till att göra vår egen lösning...
+
+\section{Features/Requirements}
+Vilka krav vi har och/eller features
+
+\section{Structure/Model}
+Our solution consists of two parts, a server and a client. These are two independent programs that communicates using a protocol that we have oursleves defined. The communication uses a TCP connection.
+
+\subsection{Library}
+Här beskriver vi xuggle lite kortfattat, lägg gärna till referenser. Problemen med xuggle tykcer jag vi tar i diskussionen
+
+\subsection{Client}
+Viktigaste klasser och annat tekniskt hur klienten fungerar
+
+\subsection{Server}
+samma här fast för servern
+
+\subsection{Protocol}
+beskrivning av protokollet
+
+\section{User Guide}
+manual
+
+\section{Evaluation/Discussion}
+kolla rapportgrejsen som jag länkat till: http://fileadmin.cs.lth.se/cs/Education/EDA095/2010/projektrapport.pdf
+\section{Source Code}
+Vi beskriver bara hur källkoden är organiserad, för mycket att inkludera allt
+
+
+
+
+\begin{thebibliography}{1}
+\bibitem{wikipedia}
+http://en.wikipedia.org
+\end{thebibliography}
+\end{document}
