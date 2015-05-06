@@ -28,7 +28,7 @@ public class ImageSender extends Thread {
 		try {
 			while ((!monitor.finished() || monitor.hasMoreFrames()) && monitor.isStreamOpen() ) {
 				ImageBufferElement image = monitor.getNextImage();
-				byte[] bytes = createBytesFromImage(image.getImage(),Configuration.SERVER_COMPRESSION_QAULITY);
+				byte[] bytes = createBytesFromImage(image.getImage(),Configuration.SERVER_COMPRESSION_QUALITY);
 				if (bytes != null) {
 					ss.sendFrame(bytes, image.getTimestamp());
 				}

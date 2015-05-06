@@ -27,11 +27,11 @@ public class Streamer implements Runnable {
 			new ServerReceiver(monitor,socket,ss).start();
 			ServerListener sl = new ServerListener(monitor);
 			String movie = monitor.getMovieName();
-			IMediaReader reader = ToolFactory.makeReader(Configuration.MEDIA_DIRECTORY+"/"+movie);
+			IMediaReader reader = ToolFactory.makeReader(Configuration.SERVER_MEDIA_DIRECTORY+"/"+movie);
 			reader.addListener(sl);
 			int counter = 0;
 			do{
-				if (counter == Configuration.BLOCK_SIZE){
+				if (counter == Configuration.SERVER_BLOCK_SIZE){
 					try {
 						Thread.sleep(Configuration.SERVER_WAIT_TIME);
 					} catch (InterruptedException e) {

@@ -32,7 +32,7 @@ public class ServerSender {
 
 	public synchronized void sendMovieList() throws IOException {
 		dos.writeByte(Protocol.LIST_START);	
-		File[] dir = new File(Configuration.MEDIA_DIRECTORY).listFiles();
+		File[] dir = new File(Configuration.SERVER_MEDIA_DIRECTORY).listFiles();
 		ArrayList<String> toBeSent = new ArrayList<String>();
 		for (File f : dir){
 			if (f.getName().charAt(0) != '.'){

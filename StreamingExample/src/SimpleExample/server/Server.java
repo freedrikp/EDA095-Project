@@ -13,6 +13,7 @@ public class Server {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Configuration.loadConfiguration("config.txt");
 		ExecutorService es = Executors.newCachedThreadPool();
 		ServerSocket ss;
 		try {

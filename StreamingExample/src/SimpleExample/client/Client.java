@@ -40,6 +40,7 @@ public class Client {
 	public static void main(String[] args) {
 
 		try {
+			Configuration.loadConfiguration("config.txt");
 			Socket socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
 			ClientSender cs = new ClientSender(socket);
 			ClientBuffer cib = new ClientBuffer();
