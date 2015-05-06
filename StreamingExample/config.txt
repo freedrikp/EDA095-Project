@@ -4,7 +4,7 @@
 	#Client
 	CLIENT_BUFFER_SIZE = 100
 	CLIENT_HOST = localhost
-	
+
 	#Server
 	SERVER_COMPRESSION_QUALITY = 0.3
 	SERVER_MEDIA_DIRECTORY = media

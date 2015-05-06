@@ -53,7 +53,7 @@ public class Configuration {
 						SERVER_BLOCK_SIZE = Integer.parseInt(par[1].trim());
 						break;
 					default:
-						System.out.println("Unknown parameter loaded: " + line.trim());
+						System.out.println("Unknown parameter in " + file  + ": " + line.trim());
 						continue;
 					}
 					System.out.println("Parameter " + par[0].trim() + " loaded with " + par[1].trim());
