@@ -253,7 +253,6 @@ public class ClientGui {
 
 	public void updateProgressBar() {
 		int bufferSize = cib.getSize();
-		//System.out.println("BUFFER SIZE"+cib.getSize());
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 		}else if(firstTimeBufferLoaded){
@@ -261,6 +260,7 @@ public class ClientGui {
 			btnPlay.setText("Pause");
 			btnPlay.setEnabled(true);
 			firstTimeBufferLoaded = false;
+			progressBar.setValue(Configuration.CLIENT_BUFFER_SIZE);
 		}
 		nbrOfFrames.setText(bufferSize + " frames");
 	}
