@@ -28,11 +28,13 @@ public class ServerBuffer {
 	public synchronized ImageBufferElement getNextImage() {
 		while (images.isEmpty()) {
 			try {
+				images.clear();
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(images.size());
 		return images.poll();
 	}
 
