@@ -55,7 +55,6 @@ public class ClientGui {
 	@SuppressWarnings({ "unchecked" })
 	private void initialize() {
 		frame = new JFrame();
-
 		frame.getContentPane().setBackground(Color.DARK_GRAY);
 		frame.setAlwaysOnTop(true);
 		frame.setBounds(100, 100, 864, 486);
