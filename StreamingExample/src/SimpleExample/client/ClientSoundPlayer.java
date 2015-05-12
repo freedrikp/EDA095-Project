@@ -8,11 +8,11 @@ import javax.sound.sampled.SourceDataLine;
 import SimpleExample.common.AudioBufferElement;
 
 public class ClientSoundPlayer extends Thread {
-	private ClientBuffer cab;
+	private ClientBuffer cBuffer;
 
-	public ClientSoundPlayer(ClientBuffer cab) {
+	public ClientSoundPlayer(ClientBuffer cBuffer) {
 		super();
-		this.cab = cab;
+		this.cBuffer = cBuffer;
 	}
 
 	public void run() {
@@ -20,15 +20,15 @@ public class ClientSoundPlayer extends Thread {
 		SourceDataLine mLine = null;
 		boolean firstTime = true;
 		long savedStart = 0;
-		while (cab.moreToPlay()) {
+		while (cBuffer.moreToPlay()) {
 			long tmp = System.currentTimeMillis();
-			long movieStart = cab.waitForPlay();
+			long movieStart = cBuffer.waitForPlay();
 			if (savedStart == 0) {
 				savedStart = movieStart;
 			} else if (savedStart != movieStart) {
 				break;
 			}
-			AudioBufferElement b = cab.getSample();
+			AudioBufferElement bufferElement = cBuffer.getSample();
 			if (!firstTime) {
 				pausTime += System.currentTimeMillis() - tmp;
 			} else {
@@ -37,8 +37,9 @@ public class ClientSoundPlayer extends Thread {
 			if (mLine == null) {
 				try {
 					AudioFormat audioFormat = new AudioFormat(
-							b.getSampleRate(), b.getSampleSize(),
-							b.getChannels(), true, false);
+							bufferElement.getSampleRate(),
+							bufferElement.getSampleSize(),
+							bufferElement.getChannels(), true, false);
 					DataLine.Info info = new DataLine.Info(
 							SourceDataLine.class, audioFormat);
 					mLine = (SourceDataLine) AudioSystem.getLine(info);
@@ -48,7 +49,7 @@ public class ClientSoundPlayer extends Thread {
 					e.printStackTrace();
 				}
 			}
-			long timestamp = b.getTimestamp();
+			long timestamp = bufferElement.getTimestamp();
 			try {
 				long timeToSleep = timestamp + pausTime
 						- System.currentTimeMillis() + movieStart;
@@ -61,7 +62,8 @@ public class ClientSoundPlayer extends Thread {
 				e.printStackTrace();
 			}
 			if (mLine != null) {
-				mLine.write(b.getSample(), 0, b.getSample().length);
+				mLine.write(bufferElement.getSample(), 0,
+						bufferElement.getSample().length);
 			}
 		}
 

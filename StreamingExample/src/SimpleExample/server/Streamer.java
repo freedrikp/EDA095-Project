@@ -17,19 +17,19 @@ public class Streamer implements Runnable {
 
 	public void run() {
 		try {
-			ServerBuffer monitor = new ServerBuffer();
-			ServerSender ss = new ServerSender(socket);
-			AudioSender as = new AudioSender(monitor, ss);
-			ImageSender is = new ImageSender(monitor, ss);
-			is.start();
-			as.start();
-			new ServerReceiver(monitor, socket, ss).start();
-			ServerListener sl = new ServerListener(monitor);
-			String movie = monitor.getMovieName();
+			ServerBuffer sBuffer = new ServerBuffer();
+			ServerSender sSender = new ServerSender(socket);
+			AudioSender aSender = new AudioSender(sBuffer, sSender);
+			ImageSender iSender = new ImageSender(sBuffer, sSender);
+			iSender.start();
+			aSender.start();
+			new ServerReceiver(sBuffer, socket, sSender).start();
+			ServerListener sListener = new ServerListener(sBuffer);
+			String movieName = sBuffer.getMovieName();
 			IMediaReader reader = ToolFactory
 					.makeReader(Configuration.SERVER_MEDIA_DIRECTORY + "/"
-							+ movie);
-			reader.addListener(sl);
+							+ movieName);
+			reader.addListener(sListener);
 			int counter = 0;
 			do {
 				if (counter == Configuration.SERVER_BLOCK_SIZE) {
@@ -41,9 +41,9 @@ public class Streamer implements Runnable {
 					counter = 0;
 				}
 				counter++;
-				monitor.waitForRunStream();
-			} while (reader.readPacket() == null && monitor.isStreamOpen());
-			monitor.closeIt();
+				sBuffer.waitForRunStream();
+			} while (reader.readPacket() == null && sBuffer.isStreamOpen());
+			sBuffer.closeIt();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

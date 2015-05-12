@@ -5,29 +5,34 @@ import java.io.IOException;
 import SimpleExample.common.AudioBufferElement;
 
 public class AudioSender extends Thread {
-	private ServerBuffer monitor;
-	private ServerSender ss;
+	private ServerBuffer sBuffer;
+	private ServerSender sSender;
 
-	public AudioSender(ServerBuffer monitor, ServerSender ss) {
+	public AudioSender(ServerBuffer sBuffer, ServerSender sSender) {
 		super();
-		this.monitor = monitor;
-		this.ss = ss;
+		this.sBuffer = sBuffer;
+		this.sSender = sSender;
 	}
 
 	public void run() {
 		try {
-			while ((!monitor.finished() || monitor.hasMoreSamples()) && monitor.isStreamOpen() ) {
-				AudioBufferElement abe = monitor.getNextSample();
-				if (abe.getSample() != null){
-						ss.sendSample(abe.getSample(),abe.getTimestamp(),abe.getSampleRate(),abe.getSampleSize(),abe.getChannels());
+			while ((!sBuffer.finished() || sBuffer.hasMoreSamples())
+					&& sBuffer.isStreamOpen()) {
+				AudioBufferElement aBufferElement = sBuffer.getNextSample();
+				if (aBufferElement.getSample() != null) {
+					sSender.sendSample(aBufferElement.getSample(),
+							aBufferElement.getTimestamp(),
+							aBufferElement.getSampleRate(),
+							aBufferElement.getSampleSize(),
+							aBufferElement.getChannels());
 				}
 			}
-			if (!monitor.hasMoreFrames()){
-				ss.sendEndOfStream();
+			if (!sBuffer.hasMoreFrames()) {
+				sSender.sendEndOfStream();
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 	}
 }

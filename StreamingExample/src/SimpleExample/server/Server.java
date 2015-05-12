@@ -9,16 +9,15 @@ import java.util.concurrent.Executors;
 import SimpleExample.common.Configuration;
 
 public class Server {
-
 	public static void main(String[] args) {
 		Configuration.loadConfiguration("config.txt");
-		ExecutorService es = Executors.newCachedThreadPool();
-		ServerSocket ss;
+		ExecutorService execService = Executors.newCachedThreadPool();
+		ServerSocket sSocket;
 		try {
-			ss = new ServerSocket(Configuration.COM_PORT);
+			sSocket = new ServerSocket(Configuration.COM_PORT);
 			while (true) {
-				Socket socket = ss.accept();
-				es.submit(new Streamer(socket));
+				Socket socket = sSocket.accept();
+				execService.submit(new Streamer(socket));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

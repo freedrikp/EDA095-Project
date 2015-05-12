@@ -14,21 +14,22 @@ import SimpleExample.common.Protocol;
 
 public class ClientReceiver extends Thread {
 
-	private ClientBuffer cib;
+	private ClientBuffer cBuffer;
 	private Socket socket;
-	private DataInputStream dis;
+	private DataInputStream in;
 
-	public ClientReceiver(ClientBuffer cib, Socket socket) throws IOException {
-		this.cib = cib;
+	public ClientReceiver(ClientBuffer cBuffer, Socket socket)
+			throws IOException {
+		this.cBuffer = cBuffer;
 		this.socket = socket;
-		this.dis = new DataInputStream(socket.getInputStream());
+		this.in = new DataInputStream(socket.getInputStream());
 	}
 
 	public void run() {
 		try {
 			byte command = 0;
 			while (!socket.isClosed() && command != Protocol.STREAM_END) {
-				command = dis.readByte();
+				command = in.readByte();
 				switch (command) {
 				case Protocol.FRAME_BEGIN:
 					receiveImage();
@@ -45,38 +46,38 @@ public class ClientReceiver extends Thread {
 					System.out.println("Unknown command from server");
 				}
 			}
-			cib.setAllFramesSent(true);
+			cBuffer.setAllFramesSent(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void receiveMovieList() throws IOException {
-		int size = dis.readInt();
+		int size = in.readInt();
 		String[] movieList = new String[size];
 		for (int i = 0; i < size; i++) {
-			movieList[i] = dis.readUTF();
+			movieList[i] = in.readUTF();
 		}
-		cib.setMovieList(movieList);
+		cBuffer.setMovieList(movieList);
 	}
 
 	private void receiveImage() {
 		try {
-			long timestamp = dis.readLong();
-			int length = dis.readInt();
+			long timestamp = in.readLong();
+			int length = in.readInt();
 			byte[] bytes = new byte[length];
-			dis.readFully(bytes);
-			cib.addImage(new ImageBufferElement(createImageFromBytes(bytes),
-					timestamp));
+			in.readFully(bytes);
+			cBuffer.addImage(new ImageBufferElement(
+					createImageFromBytes(bytes), timestamp));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private static BufferedImage createImageFromBytes(byte[] imageData) {
-		ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
+		ByteArrayInputStream byteIn = new ByteArrayInputStream(imageData);
 		try {
-			return ImageIO.read(bais);
+			return ImageIO.read(byteIn);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -85,15 +86,15 @@ public class ClientReceiver extends Thread {
 
 	private void receiveSample() {
 		try {
-			long timestamp = dis.readLong();
-			float sampleRate = dis.readFloat();
-			int sampleSize = dis.readInt();
-			int channels = dis.readInt();
-			int length = dis.readInt();
+			long timestamp = in.readLong();
+			float sampleRate = in.readFloat();
+			int sampleSize = in.readInt();
+			int channels = in.readInt();
+			int length = in.readInt();
 			byte[] bytes = new byte[length];
-			dis.readFully(bytes);
-			cib.addSample(new AudioBufferElement(bytes, timestamp, sampleRate,
-					sampleSize, channels));
+			in.readFully(bytes);
+			cBuffer.addSample(new AudioBufferElement(bytes, timestamp,
+					sampleRate, sampleSize, channels));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

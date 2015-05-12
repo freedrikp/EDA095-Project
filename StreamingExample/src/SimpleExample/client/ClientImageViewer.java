@@ -3,11 +3,11 @@ package SimpleExample.client;
 import SimpleExample.common.ImageBufferElement;
 
 public class ClientImageViewer extends Thread {
-	private ClientBuffer cb;
+	private ClientBuffer cBuffer;
 	private ClientGui gui;
 
-	public ClientImageViewer(ClientBuffer cb, ClientGui gui) {
-		this.cb = cb;
+	public ClientImageViewer(ClientBuffer cBuffer, ClientGui gui) {
+		this.cBuffer = cBuffer;
 		this.gui = gui;
 	}
 
@@ -15,15 +15,15 @@ public class ClientImageViewer extends Thread {
 		long pausTime = 0;
 		boolean firstTime = true;
 		long savedStart = 0;
-		while (cb.moreToShow()) {
+		while (cBuffer.moreToShow()) {
 			long tmp = System.currentTimeMillis();
-			long movieStart = cb.waitForPlay();
+			long movieStart = cBuffer.waitForPlay();
 			if (savedStart == 0) {
 				savedStart = movieStart;
 			} else if (savedStart != movieStart) {
 				break;
 			}
-			ImageBufferElement image = cb.getImage();
+			ImageBufferElement image = cBuffer.getImage();
 			if (!firstTime) {
 				pausTime += System.currentTimeMillis() - tmp;
 			} else {

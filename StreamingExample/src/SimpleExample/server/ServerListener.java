@@ -12,11 +12,11 @@ import com.xuggle.xuggler.IAudioSamples;
 import com.xuggle.xuggler.video.ConverterFactory;
 
 public class ServerListener extends MediaListenerAdapter {
-	private ServerBuffer monitor;
+	private ServerBuffer sBuffer;
 
-	public ServerListener(ServerBuffer monitor) {
+	public ServerListener(ServerBuffer sBuffer) {
 		super();
-		this.monitor = monitor;
+		this.sBuffer = sBuffer;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class ServerListener extends MediaListenerAdapter {
 		if (aSamples.isComplete()) {
 			byte[] rawBytes = aSamples.getData().getByteArray(0,
 					aSamples.getSize());
-			monitor.addSample(new AudioBufferElement(rawBytes, event
+			sBuffer.addSample(new AudioBufferElement(rawBytes, event
 					.getTimeStamp() / 1000, (float) aSamples.getSampleRate(),
 					(int) aSamples.getSampleBitDepth(), aSamples.getChannels()));
 		}
@@ -38,7 +38,7 @@ public class ServerListener extends MediaListenerAdapter {
 			BufferedImage bi = ConverterFactory.createConverter(
 					ConverterFactory.XUGGLER_BGR_24, event.getMediaData())
 					.toImage(event.getMediaData());
-			monitor.addImage(new ImageBufferElement(bi,
+			sBuffer.addImage(new ImageBufferElement(bi,
 					event.getTimeStamp() / 1000));
 		}
 		event.getMediaData().delete();

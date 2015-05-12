@@ -15,28 +15,28 @@ import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
 public class ImageSender extends Thread {
-	private ServerBuffer monitor;
-	private ServerSender ss;
+	private ServerBuffer sBuffer;
+	private ServerSender sSender;
 
-	public ImageSender(ServerBuffer monitor, ServerSender ss) {
+	public ImageSender(ServerBuffer sBuffer, ServerSender sSender) {
 		super();
-		this.monitor = monitor;
-		this.ss = ss;
+		this.sBuffer = sBuffer;
+		this.sSender = sSender;
 	}
 
 	public void run() {
 		try {
-			while ((!monitor.finished() || monitor.hasMoreFrames())
-					&& monitor.isStreamOpen()) {
-				ImageBufferElement image = monitor.getNextImage();
+			while ((!sBuffer.finished() || sBuffer.hasMoreFrames())
+					&& sBuffer.isStreamOpen()) {
+				ImageBufferElement image = sBuffer.getNextImage();
 				byte[] bytes = createBytesFromImage(image.getImage(),
 						Configuration.SERVER_COMPRESSION_QUALITY);
 				if (bytes != null) {
-					ss.sendFrame(bytes, image.getTimestamp());
+					sSender.sendFrame(bytes, image.getTimestamp());
 				}
 			}
-			if (!monitor.hasMoreSamples()) {
-				ss.sendEndOfStream();
+			if (!sBuffer.hasMoreSamples()) {
+				sSender.sendEndOfStream();
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -47,11 +47,11 @@ public class ImageSender extends Thread {
 	@SuppressWarnings("unused")
 	private static byte[] createBytesFromImage(BufferedImage image) {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(image, "jpg", baos);
-			baos.flush();
-			byte[] imageInByte = baos.toByteArray();
-			baos.close();
+			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+			ImageIO.write(image, "jpg", byteOut);
+			byteOut.flush();
+			byte[] imageInByte = byteOut.toByteArray();
+			byteOut.close();
 			return imageInByte;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,14 +62,15 @@ public class ImageSender extends Thread {
 	private static byte[] createBytesFromImage(BufferedImage image,
 			float compression) {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 
 			Iterator<ImageWriter> writers = ImageIO
 					.getImageWritersByFormatName("jpg");
 			ImageWriter writer = (ImageWriter) writers.next();
 
-			ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
-			writer.setOutput(ios);
+			ImageOutputStream imageOut = ImageIO
+					.createImageOutputStream(byteOut);
+			writer.setOutput(imageOut);
 
 			ImageWriteParam param = writer.getDefaultWriteParam();
 
@@ -77,9 +78,9 @@ public class ImageSender extends Thread {
 			param.setCompressionQuality(compression);
 			writer.write(null, new IIOImage(image, null, null), param);
 
-			baos.flush();
-			byte[] imageInByte = baos.toByteArray();
-			baos.close();
+			byteOut.flush();
+			byte[] imageInByte = byteOut.toByteArray();
+			byteOut.close();
 
 			return imageInByte;
 		} catch (IOException e) {

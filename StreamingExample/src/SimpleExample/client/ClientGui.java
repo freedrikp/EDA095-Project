@@ -30,25 +30,25 @@ import SimpleExample.common.Configuration;
 
 @SuppressWarnings("rawtypes")
 public class ClientGui {
-	private JLabel label;
+	private ClientSender cSender;
+	private ClientBuffer cBuffer;
 	private Socket socket;
-	private boolean firstImage = true;
 	private JFrame frame;
-	private JProgressBar progressBar;
+	private JLabel movieScreen;
 	private JLabel nbrOfFrames;
 	private JLabel nbrOfAudioSamples;
-	private ClientBuffer cib;
 	private boolean fullscreen = false;
-	private JButton btnPlay;
-	private JButton btnStreamPlay;
-	private ClientSender cs;
-	private JList list;
+	private boolean firstImage = true;
 	private boolean firstTimeBufferLoaded = true;
 	private boolean firstSelect = true;
+	private JProgressBar progressBar;
+	private JButton btnPlay;
+	private JButton btnStreamPlay;
+	private JList movieList;
 
-	public ClientGui(ClientSender cs, ClientBuffer cib) {
-		this.cs = cs;
-		this.cib = cib;
+	public ClientGui(ClientSender cSender, ClientBuffer cBuffer) {
+		this.cSender = cSender;
+		this.cBuffer = cBuffer;
 		initialize();
 	}
 
@@ -65,18 +65,18 @@ public class ClientGui {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
-		JPanel MainPanel = new JPanel();
-		MainPanel.setBackground(Color.DARK_GRAY);
-		tabbedPane.addTab("Main Panel", null, MainPanel, null);
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBackground(Color.DARK_GRAY);
+		tabbedPane.addTab("Main Panel", null, mainPanel, null);
 		tabbedPane.setEnabledAt(0, true);
-		MainPanel.setLayout(new BorderLayout(0, 0));
+		mainPanel.setLayout(new BorderLayout(0, 0));
 
 		JPanel movieScreenPanel = new JPanel();
 		movieScreenPanel.setBackground(Color.DARK_GRAY);
-		MainPanel.add(movieScreenPanel, BorderLayout.CENTER);
 		movieScreenPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		mainPanel.add(movieScreenPanel, BorderLayout.CENTER);
 
-		JLabel movieScreen = new JLabel();
+		movieScreen = new JLabel();
 		movieScreenPanel.add(movieScreen);
 		movieScreen.addMouseListener(new MouseAdapter() {
 			@Override
@@ -90,45 +90,45 @@ public class ClientGui {
 					}
 					fullscreen = !fullscreen;
 				}
-				if (cib.isPlaying()) {
-					cib.setPlayNotPause(false);
+				if (cBuffer.isPlaying()) {
+					cBuffer.setPlayNotPause(false);
 					btnPlay.setText("Play");
 				} else {
-					cib.setPlayNotPause(true);
+					cBuffer.setPlayNotPause(true);
 					btnPlay.setText("Pause");
 				}
 			}
 		});
 		movieScreen.setHorizontalAlignment(SwingConstants.CENTER);
-		this.label = movieScreen;
 
 		JPanel buttonPanel = new JPanel();
-		MainPanel.add(buttonPanel, BorderLayout.SOUTH);
-		buttonPanel.setBackground(Color.GRAY);
 		buttonPanel.setLayout(new BorderLayout(0, 0));
+		buttonPanel.setBackground(Color.GRAY);
+		mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 		JPanel actionPanel = new JPanel();
 		actionPanel.setBackground(Color.GRAY);
-		buttonPanel.add(actionPanel);
 		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
+		buttonPanel.add(actionPanel);
+
 		JPanel statsPanel = new JPanel();
 		statsPanel.setBackground(Color.GRAY);
+		statsPanel.setLayout(new BorderLayout(0, 0));
 		actionPanel.add(statsPanel);
-				statsPanel.setLayout(new BorderLayout(0, 0));
-				nbrOfFrames = new JLabel();
-				statsPanel.add(nbrOfFrames, BorderLayout.NORTH);
-				nbrOfFrames.setForeground(Color.WHITE);
-				
-				nbrOfAudioSamples = new JLabel();
-				statsPanel.add(nbrOfAudioSamples, BorderLayout.SOUTH);
-				nbrOfAudioSamples.setForeground(Color.WHITE);
+
+		nbrOfFrames = new JLabel();
+		nbrOfFrames.setForeground(Color.WHITE);
+		statsPanel.add(nbrOfFrames, BorderLayout.NORTH);
+
+		nbrOfAudioSamples = new JLabel();
+		nbrOfAudioSamples.setForeground(Color.WHITE);
+		statsPanel.add(nbrOfAudioSamples, BorderLayout.SOUTH);
 
 		progressBar = new JProgressBar(0, Configuration.CLIENT_BUFFER_SIZE);
-		actionPanel.add(progressBar);
 		progressBar.setForeground(Color.LIGHT_GRAY);
 		progressBar.setBackground(Color.DARK_GRAY);
 		progressBar.setValue(0);
+		actionPanel.add(progressBar);
 
 		btnPlay = new JButton("Play");
 		btnPlay.setEnabled(false);
@@ -136,12 +136,12 @@ public class ClientGui {
 
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (cib.isPlaying()) {
+				if (cBuffer.isPlaying()) {
 					btnPlay.setText("Play");
 				} else {
 					btnPlay.setText("Pause");
 				}
-				cib.setPlayNotPause(!cib.isPlaying());
+				cBuffer.setPlayNotPause(!cBuffer.isPlaying());
 			}
 		});
 
@@ -155,10 +155,10 @@ public class ClientGui {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (btnStreamPlay.getText().equals("Start stream")) {
-						cs.sendPlayStream();
+						cSender.sendPlayStream();
 						btnStreamPlay.setText("Pause stream");
 					} else {
-						cs.sendPauseStream();
+						cSender.sendPauseStream();
 						btnStreamPlay.setText("Start stream");
 					}
 				} catch (IOException e1) {
@@ -173,7 +173,7 @@ public class ClientGui {
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					cs.sendClose();
+					cSender.sendClose();
 					socket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -187,11 +187,12 @@ public class ClientGui {
 		tabbedPane.addTab("Select Panel", null, selectPanel, null);
 		selectPanel.setLayout(new BorderLayout(0, 0));
 
-		list = new JList(cib.getMovieList());
-		list.setBorder(UIManager.getBorder("List.focusCellHighlightBorder"));
-		list.setBackground(Color.DARK_GRAY);
-		list.setForeground(Color.WHITE);
-		selectPanel.add(list);
+		movieList = new JList(cBuffer.getMovieList());
+		movieList.setBorder(UIManager
+				.getBorder("List.focusCellHighlightBorder"));
+		movieList.setBackground(Color.DARK_GRAY);
+		movieList.setForeground(Color.WHITE);
+		selectPanel.add(movieList);
 
 		JPanel selectButtonPanel = new JPanel();
 		selectButtonPanel.setBackground(Color.GRAY);
@@ -206,7 +207,7 @@ public class ClientGui {
 					} else {
 						firstSelect = false;
 					}
-					cs.sendTitle(list.getSelectedValue().toString());
+					cSender.sendTitle(movieList.getSelectedValue().toString());
 					btnStreamPlay.setEnabled(true);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -229,15 +230,17 @@ public class ClientGui {
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			int width = (int) screenSize.getWidth();
 			int height = (int) (screenSize.getHeight() / 1.3);
-			label.setSize(width, height);
-			BufferedImage fullscreenImage = new BufferedImage(label.getWidth(),
-					label.getHeight(), BufferedImage.TYPE_INT_RGB);
+			movieScreen.setSize(width, height);
+			BufferedImage fullscreenImage = new BufferedImage(
+					movieScreen.getWidth(), movieScreen.getHeight(),
+					BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = fullscreenImage.createGraphics();
-			g.drawImage(image, 0, 0, label.getWidth(), label.getHeight(), null);
+			g.drawImage(image, 0, 0, movieScreen.getWidth(),
+					movieScreen.getHeight(), null);
 			g.dispose();
 			image = fullscreenImage;
 		}
-		label.setIcon(new ImageIcon(image));
+		movieScreen.setIcon(new ImageIcon(image));
 
 	}
 
@@ -246,33 +249,33 @@ public class ClientGui {
 	}
 
 	public void updateProgressBar() {
-		int bufferSize = cib.getSize();
+		int bufferSize = cBuffer.getSize();
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
 		} else if (firstTimeBufferLoaded) {
-			cib.setPlayNotPause(true);
+			cBuffer.setPlayNotPause(true);
 			btnPlay.setText("Pause");
 			btnPlay.setEnabled(true);
 			firstTimeBufferLoaded = false;
 			progressBar.setValue(Configuration.CLIENT_BUFFER_SIZE);
 		}
 		nbrOfFrames.setText(bufferSize + " frames\n");
-		nbrOfAudioSamples.setText(cib.getAudioSize() + " audio samples");
+		nbrOfAudioSamples.setText(cBuffer.getAudioSize() + " audio samples");
 	}
 
 	private void startNewMovie() throws UnknownHostException, IOException {
-		cs.sendClose();
+		cSender.sendClose();
 		socket.close();
 		socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
-		cs.setSocket(socket);
-		cib.reset();
-		new ClientReceiver(cib, socket).start();
+		cSender.setSocket(socket);
+		cBuffer.reset();
+		new ClientReceiver(cBuffer, socket).start();
 		firstImage = true;
 		firstTimeBufferLoaded = true;
 		btnStreamPlay.setText("Start stream");
 		btnPlay.setText("Play");
 		btnPlay.setEnabled(false);
-		new ClientImageViewer(cib, this).start();
-		new ClientSoundPlayer(cib).start();
+		new ClientImageViewer(cBuffer, this).start();
+		new ClientSoundPlayer(cBuffer).start();
 	}
 }

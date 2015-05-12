@@ -8,7 +8,7 @@ import SimpleExample.common.ImageBufferElement;
 public class ClientBuffer {
 	private LinkedList<ImageBufferElement> images;
 	private boolean allFramesSent = false;
-	private boolean playNotPause = false;
+	private boolean isPlaying = false;
 	private String[] movieList;
 	private LinkedList<AudioBufferElement> samples;
 	private boolean allSamplesSent = false;
@@ -59,12 +59,12 @@ public class ClientBuffer {
 		if (movieStart == 0) {
 			movieStart = System.currentTimeMillis();
 		}
-		this.playNotPause = playNotPause;
+		this.isPlaying = playNotPause;
 		notifyAll();
 	}
 
 	public synchronized long waitForPlay() {
-		while (!playNotPause) {
+		while (!isPlaying) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -75,7 +75,7 @@ public class ClientBuffer {
 	}
 
 	public synchronized boolean isPlaying() {
-		return playNotPause;
+		return isPlaying;
 	}
 
 	public synchronized void setMovieList(String[] movieList) {
@@ -128,7 +128,7 @@ public class ClientBuffer {
 	public synchronized void reset() {
 		images.clear();
 		allFramesSent = false;
-		playNotPause = false;
+		isPlaying = false;
 		samples.clear();
 		allSamplesSent = false;
 		movieStart = 0;

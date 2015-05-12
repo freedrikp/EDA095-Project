@@ -8,41 +8,41 @@ import SimpleExample.common.Protocol;
 
 @SuppressWarnings("unused")
 public class ServerReceiver extends Thread {
-	private ServerBuffer buffer;
+	private ServerBuffer sBuffer;
 	private Socket socket;
-	private DataInputStream dis;
-	private ServerSender ss;
+	private DataInputStream in;
+	private ServerSender sSender;
 
-	public ServerReceiver(ServerBuffer buffer, Socket socket, ServerSender ss)
-			throws IOException {
-		this.buffer = buffer;
+	public ServerReceiver(ServerBuffer sBuffer, Socket socket,
+			ServerSender sSender) throws IOException {
+		this.sBuffer = sBuffer;
 		this.socket = socket;
-		this.ss = ss;
-		this.dis = new DataInputStream(socket.getInputStream());
+		this.sSender = sSender;
+		this.in = new DataInputStream(socket.getInputStream());
 	}
 
 	public void run() {
 		try {
 			byte command = 0;
-			while (buffer.isStreamOpen() && command != Protocol.CLOSE_STREAM) {
-				command = dis.readByte();
+			while (sBuffer.isStreamOpen() && command != Protocol.CLOSE_STREAM) {
+				command = in.readByte();
 				switch (command) {
 				case Protocol.PLAY_STREAM:
-					buffer.setRunStream(true);
+					sBuffer.setRunStream(true);
 					break;
 				case Protocol.PAUSE_STREAM:
-					buffer.setRunStream(false);
+					sBuffer.setRunStream(false);
 					break;
 				case Protocol.CLOSE_STREAM:
-					buffer.setStreamOpen(false);
-					buffer.setRunStream(true);
+					sBuffer.setStreamOpen(false);
+					sBuffer.setRunStream(true);
 					break;
 				case Protocol.GIVE_MOVIE_LIST:
-					ss.sendMovieList();
+					sSender.sendMovieList();
 					break;
 				case Protocol.CHOSEN_TITLE:
-					String movieName = dis.readUTF();
-					buffer.setMovieName(movieName);
+					String movieName = in.readUTF();
+					sBuffer.setMovieName(movieName);
 					break;
 				default:
 					System.out.println("Unknown command from client");
