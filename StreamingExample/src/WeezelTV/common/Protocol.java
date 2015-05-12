@@ -1,4 +1,4 @@
-package SimpleExample.common;
+package WeezelTV.common;
 
 public class Protocol {
 

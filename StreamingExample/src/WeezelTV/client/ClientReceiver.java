@@ -1,4 +1,4 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -8,9 +8,9 @@ import java.net.Socket;
 
 import javax.imageio.ImageIO;
 
-import SimpleExample.common.AudioBufferElement;
-import SimpleExample.common.ImageBufferElement;
-import SimpleExample.common.Protocol;
+import WeezelTV.common.AudioBufferElement;
+import WeezelTV.common.ImageBufferElement;
+import WeezelTV.common.Protocol;
 
 public class ClientReceiver extends Thread {
 

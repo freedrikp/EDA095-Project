@@ -1,9 +1,9 @@
-package SimpleExample.server;
+package WeezelTV.server;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import SimpleExample.common.Configuration;
+import WeezelTV.common.Configuration;
 
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.ToolFactory;

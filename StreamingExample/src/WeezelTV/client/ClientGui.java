@@ -1,4 +1,4 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,7 +26,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import SimpleExample.common.Configuration;
+import WeezelTV.common.Configuration;
 
 @SuppressWarnings("rawtypes")
 public class ClientGui {

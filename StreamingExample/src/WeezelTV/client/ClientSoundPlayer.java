@@ -1,11 +1,11 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
-import SimpleExample.common.AudioBufferElement;
+import WeezelTV.common.AudioBufferElement;
 
 public class ClientSoundPlayer extends Thread {
 	private ClientBuffer cBuffer;

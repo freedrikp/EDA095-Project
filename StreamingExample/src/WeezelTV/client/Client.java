@@ -1,10 +1,10 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import SimpleExample.common.Configuration;
+import WeezelTV.common.Configuration;
 
 public class Client {
 	public static void main(String[] args) {

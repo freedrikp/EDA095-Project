@@ -1,10 +1,10 @@
-package SimpleExample.server;
+package WeezelTV.server;
 
 import java.util.LinkedList;
 
-import SimpleExample.common.AudioBufferElement;
-import SimpleExample.common.Configuration;
-import SimpleExample.common.ImageBufferElement;
+import WeezelTV.common.AudioBufferElement;
+import WeezelTV.common.Configuration;
+import WeezelTV.common.ImageBufferElement;
 
 public class ServerBuffer {
 	private boolean closed;
@@ -21,20 +21,18 @@ public class ServerBuffer {
 	}
 
 	public synchronized void addImage(ImageBufferElement image) {
-		images.addLast(image);
+		images.add(image);
 		notifyAll();
 	}
 
 	public synchronized ImageBufferElement getNextImage() {
 		while (images.isEmpty()) {
 			try {
-				images.clear();
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(images.size());
 		return images.poll();
 	}
 
@@ -95,7 +93,7 @@ public class ServerBuffer {
 	}
 
 	public synchronized void addSample(AudioBufferElement sample) {
-		samples.addLast(sample);
+		samples.add(sample);
 		notifyAll();
 	}
 

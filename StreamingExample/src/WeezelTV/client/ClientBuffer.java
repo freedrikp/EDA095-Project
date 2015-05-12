@@ -1,9 +1,9 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
 import java.util.LinkedList;
 
-import SimpleExample.common.AudioBufferElement;
-import SimpleExample.common.ImageBufferElement;
+import WeezelTV.common.AudioBufferElement;
+import WeezelTV.common.ImageBufferElement;
 
 public class ClientBuffer {
 	private LinkedList<ImageBufferElement> images;

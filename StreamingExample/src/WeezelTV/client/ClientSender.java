@@ -1,10 +1,10 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import SimpleExample.common.Protocol;
+import WeezelTV.common.Protocol;
 
 @SuppressWarnings("unused")
 public class ClientSender {

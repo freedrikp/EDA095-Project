@@ -1,9 +1,9 @@
-package SimpleExample.server;
+package WeezelTV.server;
 
 import java.awt.image.BufferedImage;
 
-import SimpleExample.common.AudioBufferElement;
-import SimpleExample.common.ImageBufferElement;
+import WeezelTV.common.AudioBufferElement;
+import WeezelTV.common.ImageBufferElement;
 
 import com.xuggle.mediatool.MediaListenerAdapter;
 import com.xuggle.mediatool.event.IAudioSamplesEvent;

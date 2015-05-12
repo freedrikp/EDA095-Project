@@ -1,4 +1,4 @@
-package SimpleExample.common;
+package WeezelTV.common;
 
 import java.awt.image.BufferedImage;
 

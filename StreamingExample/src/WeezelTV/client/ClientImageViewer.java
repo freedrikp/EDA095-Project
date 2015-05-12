@@ -1,6 +1,6 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
-import SimpleExample.common.ImageBufferElement;
+import WeezelTV.common.ImageBufferElement;
 
 public class ClientImageViewer extends Thread {
 	private ClientBuffer cBuffer;

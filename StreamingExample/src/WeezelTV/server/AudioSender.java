@@ -1,8 +1,8 @@
-package SimpleExample.server;
+package WeezelTV.server;
 
 import java.io.IOException;
 
-import SimpleExample.common.AudioBufferElement;
+import WeezelTV.common.AudioBufferElement;
 
 public class AudioSender extends Thread {
 	private ServerBuffer sBuffer;

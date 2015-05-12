@@ -1,10 +1,10 @@
-package SimpleExample.server;
+package WeezelTV.server;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import SimpleExample.common.Protocol;
+import WeezelTV.common.Protocol;
 
 @SuppressWarnings("unused")
 public class ServerReceiver extends Thread {

@@ -1,4 +1,4 @@
-package SimpleExample.common;
+package WeezelTV.common;
 
 import java.io.File;
 import java.io.FileNotFoundException;

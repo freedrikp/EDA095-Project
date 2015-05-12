@@ -1,4 +1,4 @@
-package SimpleExample.server;
+package WeezelTV.server;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -11,8 +11,8 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
-import SimpleExample.common.Configuration;
-import SimpleExample.common.ImageBufferElement;
+import WeezelTV.common.Configuration;
+import WeezelTV.common.ImageBufferElement;
 
 public class ImageSender extends Thread {
 	private ServerBuffer sBuffer;

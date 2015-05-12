@@ -1,4 +1,4 @@
-package SimpleExample.client;
+package WeezelTV.client;
 
 public class ClientGuiUpdater extends Thread {
 	private ClientGui gui;
