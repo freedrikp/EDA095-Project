@@ -3,20 +3,16 @@ package SimpleExample.client;
 import java.util.LinkedList;
 
 import SimpleExample.common.AudioBufferElement;
-import SimpleExample.common.Configuration;
 import SimpleExample.common.ImageBufferElement;
 
 public class ClientBuffer {
 	private LinkedList<ImageBufferElement> images;
-//	private boolean firstImage = true;
 	private boolean allFramesSent = false;
 	private boolean playNotPause = false;
 	private String[] movieList;
 	private LinkedList<AudioBufferElement> samples;
 	private boolean allSamplesSent = false;
 	private long movieStart = 0;
-//	private long pausTime = 0;
-//	private long tmpTimestamp;
 
 	public ClientBuffer() {
 		this.images = new LinkedList<ImageBufferElement>();
@@ -29,16 +25,6 @@ public class ClientBuffer {
 	}
 
 	public synchronized ImageBufferElement getImage() {
-//		if (firstImage) {
-//			while (images.size() < Configuration.CLIENT_BUFFER_SIZE) {
-//				try {
-//					wait();
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			firstImage = false;
-//		}
 		while (images.isEmpty()) {
 			try {
 				wait();
@@ -70,16 +56,9 @@ public class ClientBuffer {
 	}
 
 	public synchronized void setPlayNotPause(boolean playNotPause) {
-		if (movieStart == 0){
+		if (movieStart == 0) {
 			movieStart = System.currentTimeMillis();
 		}
-//		if (this.playNotPause){
-//			tmpTimestamp = System.currentTimeMillis();
-//		}else{
-//			if (tmpTimestamp > 0){
-//				pausTime += System.currentTimeMillis() - tmpTimestamp;
-//			}
-//		}
 		this.playNotPause = playNotPause;
 		notifyAll();
 	}
@@ -114,7 +93,7 @@ public class ClientBuffer {
 		}
 		return movieList;
 	}
-	
+
 	public synchronized void addSample(AudioBufferElement sample) {
 		samples.add(sample);
 		notifyAll();
@@ -155,8 +134,8 @@ public class ClientBuffer {
 		movieStart = 0;
 		notifyAll();
 	}
-	
-//	public synchronized long getPausTime(){
-//		return pausTime;
-//	}
+
+	public int getAudioSize() {
+		return samples.size();
+	}
 }

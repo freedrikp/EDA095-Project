@@ -22,7 +22,6 @@ public class AudioSender extends Thread {
 						ss.sendSample(abe.getSample(),abe.getTimestamp(),abe.getSampleRate(),abe.getSampleSize(),abe.getChannels());
 				}
 			}
-			System.out.println("Done sending audio");
 			if (!monitor.hasMoreFrames()){
 				ss.sendEndOfStream();
 			}

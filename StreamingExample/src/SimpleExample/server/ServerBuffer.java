@@ -47,18 +47,18 @@ public class ServerBuffer {
 	public synchronized boolean hasMoreFrames() {
 		if (images.size() > 0) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
-	public synchronized void setRunStream(boolean runStream){
+
+	public synchronized void setRunStream(boolean runStream) {
 		this.runStream = runStream;
 		notifyAll();
 	}
-	
-	public synchronized void waitForRunStream(){
-		while (!runStream){
+
+	public synchronized void waitForRunStream() {
+		while (!runStream) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -66,18 +66,18 @@ public class ServerBuffer {
 			}
 		}
 	}
-	
-	public synchronized void setStreamOpen(boolean streamOpen){
+
+	public synchronized void setStreamOpen(boolean streamOpen) {
 		this.streamOpen = streamOpen;
 		notifyAll();
 	}
-	
-	public synchronized boolean isStreamOpen(){
+
+	public synchronized boolean isStreamOpen() {
 		return streamOpen;
 	}
 
 	public synchronized String getMovieName() {
-		while(movieName == null || movieName.isEmpty()){
+		while (movieName == null || movieName.isEmpty()) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -86,12 +86,12 @@ public class ServerBuffer {
 		}
 		return movieName;
 	}
-	
-	public synchronized void setMovieName(String movieName){
+
+	public synchronized void setMovieName(String movieName) {
 		this.movieName = movieName;
 		notifyAll();
 	}
-	
+
 	public synchronized void addSample(AudioBufferElement sample) {
 		samples.addLast(sample);
 		notifyAll();
@@ -107,17 +107,17 @@ public class ServerBuffer {
 		}
 		return samples.poll();
 	}
-	
+
 	public synchronized boolean hasMoreSamples() {
 		if (samples.size() > 0) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
-	public synchronized void waitForBuffer(){
-		while(images.size() > Configuration.SERVER_BUFFER_SIZE){
+
+	public synchronized void waitForBuffer() {
+		while (images.size() > Configuration.SERVER_BUFFER_SIZE) {
 			try {
 				wait();
 			} catch (InterruptedException e) {

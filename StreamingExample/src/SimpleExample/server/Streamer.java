@@ -10,7 +10,6 @@ import com.xuggle.mediatool.ToolFactory;
 
 public class Streamer implements Runnable {
 	private Socket socket;
-	
 
 	public Streamer(Socket socket) {
 		this.socket = socket;
@@ -20,18 +19,20 @@ public class Streamer implements Runnable {
 		try {
 			ServerBuffer monitor = new ServerBuffer();
 			ServerSender ss = new ServerSender(socket);
-			AudioSender as = new AudioSender(monitor,ss);
+			AudioSender as = new AudioSender(monitor, ss);
 			ImageSender is = new ImageSender(monitor, ss);
 			is.start();
 			as.start();
-			new ServerReceiver(monitor,socket,ss).start();
+			new ServerReceiver(monitor, socket, ss).start();
 			ServerListener sl = new ServerListener(monitor);
 			String movie = monitor.getMovieName();
-			IMediaReader reader = ToolFactory.makeReader(Configuration.SERVER_MEDIA_DIRECTORY+"/"+movie);
+			IMediaReader reader = ToolFactory
+					.makeReader(Configuration.SERVER_MEDIA_DIRECTORY + "/"
+							+ movie);
 			reader.addListener(sl);
 			int counter = 0;
-			do{
-				if (counter == Configuration.SERVER_BLOCK_SIZE){
+			do {
+				if (counter == Configuration.SERVER_BLOCK_SIZE) {
 					try {
 						Thread.sleep(Configuration.SERVER_WAIT_TIME);
 					} catch (InterruptedException e) {
@@ -41,7 +42,7 @@ public class Streamer implements Runnable {
 				}
 				counter++;
 				monitor.waitForRunStream();
-			}while (reader.readPacket() == null && monitor.isStreamOpen());
+			} while (reader.readPacket() == null && monitor.isStreamOpen());
 			monitor.closeIt();
 		} catch (IOException e) {
 			e.printStackTrace();

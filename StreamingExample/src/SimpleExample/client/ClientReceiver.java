@@ -31,11 +31,9 @@ public class ClientReceiver extends Thread {
 				command = dis.readByte();
 				switch (command) {
 				case Protocol.FRAME_BEGIN:
-//					System.out.println("Frame received");
 					receiveImage();
 					break;
 				case Protocol.STREAM_END:
-//					System.out.println("End of stream");
 					break;
 				case Protocol.LIST_START:
 					receiveMovieList();
@@ -53,11 +51,10 @@ public class ClientReceiver extends Thread {
 		}
 	}
 
-
 	private void receiveMovieList() throws IOException {
 		int size = dis.readInt();
-		String [] movieList = new String[size];
-		for(int i=0;i<size; i++){
+		String[] movieList = new String[size];
+		for (int i = 0; i < size; i++) {
 			movieList[i] = dis.readUTF();
 		}
 		cib.setMovieList(movieList);
@@ -95,11 +92,11 @@ public class ClientReceiver extends Thread {
 			int length = dis.readInt();
 			byte[] bytes = new byte[length];
 			dis.readFully(bytes);
-			cib.addSample(new AudioBufferElement(bytes,
-					timestamp,sampleRate,sampleSize,channels));
+			cib.addSample(new AudioBufferElement(bytes, timestamp, sampleRate,
+					sampleSize, channels));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 }

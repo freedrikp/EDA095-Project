@@ -1,7 +1,6 @@
 package SimpleExample.client;
 
 public class ClientGuiUpdater extends Thread {
-
 	private ClientGui gui;
 
 	public ClientGuiUpdater(ClientGui gui) {

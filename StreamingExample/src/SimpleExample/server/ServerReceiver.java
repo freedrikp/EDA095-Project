@@ -4,24 +4,25 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import SimpleExample.client.ClientBuffer;
 import SimpleExample.common.Protocol;
 
+@SuppressWarnings("unused")
 public class ServerReceiver extends Thread {
 	private ServerBuffer buffer;
 	private Socket socket;
 	private DataInputStream dis;
 	private ServerSender ss;
 
-	public ServerReceiver(ServerBuffer buffer, Socket socket, ServerSender ss) throws IOException {
+	public ServerReceiver(ServerBuffer buffer, Socket socket, ServerSender ss)
+			throws IOException {
 		this.buffer = buffer;
 		this.socket = socket;
 		this.ss = ss;
 		this.dis = new DataInputStream(socket.getInputStream());
 	}
-	
-	public void run(){
-		try{
+
+	public void run() {
+		try {
 			byte command = 0;
 			while (buffer.isStreamOpen() && command != Protocol.CLOSE_STREAM) {
 				command = dis.readByte();
@@ -33,7 +34,7 @@ public class ServerReceiver extends Thread {
 					buffer.setRunStream(false);
 					break;
 				case Protocol.CLOSE_STREAM:
-					buffer.setStreamOpen(false);					
+					buffer.setStreamOpen(false);
 					buffer.setRunStream(true);
 					break;
 				case Protocol.GIVE_MOVIE_LIST:
@@ -47,9 +48,8 @@ public class ServerReceiver extends Thread {
 					System.out.println("Unknown command from client");
 				}
 			}
-		}catch (IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	}
-
+}

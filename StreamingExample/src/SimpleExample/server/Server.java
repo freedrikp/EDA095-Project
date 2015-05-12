@@ -9,9 +9,7 @@ import java.util.concurrent.Executors;
 import SimpleExample.common.Configuration;
 
 public class Server {
-	/**
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
 		Configuration.loadConfiguration("config.txt");
 		ExecutorService es = Executors.newCachedThreadPool();
@@ -25,7 +23,5 @@ public class Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
-
 }

@@ -28,14 +28,15 @@ import javax.swing.UIManager;
 
 import SimpleExample.common.Configuration;
 
+@SuppressWarnings("rawtypes")
 public class ClientGui {
-
 	private JLabel label;
 	private Socket socket;
 	private boolean firstImage = true;
 	private JFrame frame;
 	private JProgressBar progressBar;
 	private JLabel nbrOfFrames;
+	private JLabel nbrOfAudioSamples;
 	private ClientBuffer cib;
 	private boolean fullscreen = false;
 	private JButton btnPlay;
@@ -44,26 +45,14 @@ public class ClientGui {
 	private JList list;
 	private boolean firstTimeBufferLoaded = true;
 	private boolean firstSelect = true;
-	/**
-	 * Launch the application.
-	 */
 
-	/**
-	 * Create the application.
-	 * @param cib 
-	 */
 	public ClientGui(ClientSender cs, ClientBuffer cib) {
 		this.cs = cs;
 		this.cib = cib;
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 * 
-	 * @param progressBar
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	private void initialize() {
 		frame = new JFrame();
 
@@ -122,10 +111,18 @@ public class ClientGui {
 		actionPanel.setBackground(Color.GRAY);
 		buttonPanel.add(actionPanel);
 		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
-		nbrOfFrames = new JLabel();
-		nbrOfFrames.setForeground(Color.WHITE);
-		actionPanel.add(nbrOfFrames);
+		
+		JPanel statsPanel = new JPanel();
+		statsPanel.setBackground(Color.GRAY);
+		actionPanel.add(statsPanel);
+				statsPanel.setLayout(new BorderLayout(0, 0));
+				nbrOfFrames = new JLabel();
+				statsPanel.add(nbrOfFrames, BorderLayout.NORTH);
+				nbrOfFrames.setForeground(Color.WHITE);
+				
+				nbrOfAudioSamples = new JLabel();
+				statsPanel.add(nbrOfAudioSamples, BorderLayout.SOUTH);
+				nbrOfAudioSamples.setForeground(Color.WHITE);
 
 		progressBar = new JProgressBar(0, Configuration.CLIENT_BUFFER_SIZE);
 		actionPanel.add(progressBar);
@@ -175,7 +172,6 @@ public class ClientGui {
 		exitPanel.add(btnExit);
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				System.out.println("Exit pressed");
 				try {
 					cs.sendClose();
 					socket.close();
@@ -190,7 +186,7 @@ public class ClientGui {
 		selectPanel.setBackground(Color.DARK_GRAY);
 		tabbedPane.addTab("Select Panel", null, selectPanel, null);
 		selectPanel.setLayout(new BorderLayout(0, 0));
-		
+
 		list = new JList(cib.getMovieList());
 		list.setBorder(UIManager.getBorder("List.focusCellHighlightBorder"));
 		list.setBackground(Color.DARK_GRAY);
@@ -205,9 +201,9 @@ public class ClientGui {
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (!firstSelect){
+					if (!firstSelect) {
 						startNewMovie();
-					}else{
+					} else {
 						firstSelect = false;
 					}
 					cs.sendTitle(list.getSelectedValue().toString());
@@ -234,8 +230,6 @@ public class ClientGui {
 			int width = (int) screenSize.getWidth();
 			int height = (int) (screenSize.getHeight() / 1.3);
 			label.setSize(width, height);
-//			System.out.println("Size: " + label.getWidth() + " "
-//					+ label.getHeight());
 			BufferedImage fullscreenImage = new BufferedImage(label.getWidth(),
 					label.getHeight(), BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = fullscreenImage.createGraphics();
@@ -255,29 +249,30 @@ public class ClientGui {
 		int bufferSize = cib.getSize();
 		if (bufferSize <= Configuration.CLIENT_BUFFER_SIZE) {
 			progressBar.setValue(bufferSize);
-		}else if(firstTimeBufferLoaded){
+		} else if (firstTimeBufferLoaded) {
 			cib.setPlayNotPause(true);
 			btnPlay.setText("Pause");
 			btnPlay.setEnabled(true);
 			firstTimeBufferLoaded = false;
 			progressBar.setValue(Configuration.CLIENT_BUFFER_SIZE);
 		}
-		nbrOfFrames.setText(bufferSize + " frames");
+		nbrOfFrames.setText(bufferSize + " frames\n");
+		nbrOfAudioSamples.setText(cib.getAudioSize() + " audio samples");
 	}
-	
-	private void startNewMovie() throws UnknownHostException, IOException{
+
+	private void startNewMovie() throws UnknownHostException, IOException {
 		cs.sendClose();
 		socket.close();
 		socket = new Socket(Configuration.CLIENT_HOST, Configuration.COM_PORT);
 		cs.setSocket(socket);
 		cib.reset();
-		new ClientReceiver(cib,socket).start();
+		new ClientReceiver(cib, socket).start();
 		firstImage = true;
 		firstTimeBufferLoaded = true;
 		btnStreamPlay.setText("Start stream");
 		btnPlay.setText("Play");
 		btnPlay.setEnabled(false);
-		new ClientImageViewer(cib,this).start();
+		new ClientImageViewer(cib, this).start();
 		new ClientSoundPlayer(cib).start();
 	}
 }

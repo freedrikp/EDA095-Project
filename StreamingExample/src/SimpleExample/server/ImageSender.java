@@ -26,14 +26,16 @@ public class ImageSender extends Thread {
 
 	public void run() {
 		try {
-			while ((!monitor.finished() || monitor.hasMoreFrames()) && monitor.isStreamOpen() ) {
+			while ((!monitor.finished() || monitor.hasMoreFrames())
+					&& monitor.isStreamOpen()) {
 				ImageBufferElement image = monitor.getNextImage();
-				byte[] bytes = createBytesFromImage(image.getImage(),Configuration.SERVER_COMPRESSION_QUALITY);
+				byte[] bytes = createBytesFromImage(image.getImage(),
+						Configuration.SERVER_COMPRESSION_QUALITY);
 				if (bytes != null) {
 					ss.sendFrame(bytes, image.getTimestamp());
 				}
 			}
-			if (!monitor.hasMoreSamples()){
+			if (!monitor.hasMoreSamples()) {
 				ss.sendEndOfStream();
 			}
 		} catch (IOException e1) {
@@ -42,6 +44,7 @@ public class ImageSender extends Thread {
 
 	}
 
+	@SuppressWarnings("unused")
 	private static byte[] createBytesFromImage(BufferedImage image) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -56,8 +59,8 @@ public class ImageSender extends Thread {
 		return null;
 	}
 
-	private static byte[] createBytesFromImage(
-			BufferedImage image, float compression) {
+	private static byte[] createBytesFromImage(BufferedImage image,
+			float compression) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -77,8 +80,7 @@ public class ImageSender extends Thread {
 			baos.flush();
 			byte[] imageInByte = baos.toByteArray();
 			baos.close();
-			
-//			System.out.println(imageInByte.length);
+
 			return imageInByte;
 		} catch (IOException e) {
 			e.printStackTrace();

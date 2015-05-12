@@ -6,12 +6,12 @@ import java.net.Socket;
 
 import SimpleExample.common.Protocol;
 
+@SuppressWarnings("unused")
 public class ClientSender {
 	private Socket socket;
 	private DataOutputStream dos;
 	
 	public ClientSender(Socket socket) throws IOException{
-		// Någon anledning till att socket finns här?
 		this.socket = socket;
 		dos = new DataOutputStream(socket.getOutputStream());
 	}
