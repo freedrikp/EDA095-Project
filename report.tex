@@ -3,6 +3,9 @@
 \usepackage[english]{babel}
 \usepackage{moreverb}
 \usepackage{graphicx}
+\usepackage{hyperref}
+
+
 \title{Project Report for WeezelTV\\ EDA095 Network Programming}
 \date{\today}
 \author{Fredrik Paulsson \\ dat11fp1@student.lu.se \and Jonas Jacobsson \\ dat11jja@student.lu.se \and Artur Matulaniec \\ dat11ama@student.lu.se \and Magnus TÃ¶rnquist \\ ada08mto@student.lu.se}
@@ -28,14 +31,14 @@ Some sample code was provided to us containing a server and client using a very 
 This code was our main foundation for trying to build a RTP server capable of streaming to VLC instead of the provided client. Unfortunately it turned out that there were many obstacles in the way.
 First we encountered several small problems, for example the sample code did not use EOL properly and thus VLC didn't know the server had finished sending an RTSP packet. Another example is that the server wanted responses to look in particular way and couldn't understand what VLC was sending.
 A third example is that VLC wanted to decide the client port in the SETUP method and therefore we had to extract that and use the port in the connection.
-These problems were rather easily fixed. Then came a slightly bigger problem: It turned out that VLC required the RTSP method "DESCRIBE" to be used even though the RFC for RTSP states that it's only a recommended method  (https://www.ietf.org/rfc/rfc2326.txt).
+These problems were rather easily fixed. Then came a slightly bigger problem: It turned out that VLC required the RTSP method "DESCRIBE" to be used even though the RFC for RTSP states that it's only a recommended method\footnote{https://www.ietf.org/rfc/rfc2326.txt}.
 Implementing a DESCRIBE method that was fully functional in all cases would be tricky (see section 10.2 in the RFC), so we decided to focus on giving VLC the correct information for that particular mjpeg file. 
 When this was done VLC was finally satisfied and a connection was established, but for some reason no packets were being received on the clients end. It was just waiting until it timed out.
 We fired up Wireshark to analyze what had gone wrong and saw plenty of packets that Wireshark did not recognize. After further inspection we realized that those were our RTP packets but with an incorrect header.
-The RTP sample code had completely skipped the beginning of the header that includes important things like padding and payload type. So we figured out what we wanted the header to be and manually set the beginning of the header to [10000000] (see https://www.ietf.org/rfc/rfc3550.txt for details) and payload type 26 (mjpeg).
+The RTP sample code had completely skipped the beginning of the header that includes important things like padding and payload type. So we figured out what we wanted the header to be and manually set the beginning of the header to [10000000]\footnote{For details: https://www.ietf.org/rfc/rfc3550.txt} and payload type 26 (mjpeg).
 Now VLC was finally receiving the packets, recognizing them as RTP packets with an mjpeg payload and handed of the decoding procedure to the open source library "LIVE555".
 LIVE555 failed to decode the packets. This was when we started to run of patience. It turned out that when sending mjpeg via RTP it requires a special header on all jpeg images. 
-When we were taking a look at the RFC for RTP Payload Format for JPEG-compressed Video (found here: https://tools.ietf.org/html/rfc2435) we realized that we had bitten of more than we could chew and decided to scrap this whole approach.
+When we were taking a look at the RFC for RTP Payload Format for JPEG-compressed Video\footnote{Found here: https://tools.ietf.org/html/rfc2435} we realized that we had bitten of more than we could chew and decided to scrap this whole approach.
 
 This code is still available but we decided not to include it here since it's irrelevant to the rest of the project. 
 
@@ -46,9 +49,9 @@ When we began our project we did set quite straight forward requirements regardi
 \item A server with some videos and being able to handle more than one client at a time.
 \item A client with our own GUI.
 \item The possibility of choosing a video to stream.
-\item Being able to play and pause, both the stream and the video.
-\item To have the video streamed with audio.
+\item Being able to play and pause.
 \item Building our own protocol in order to minimize the complexity of the software. 
+\item Optional, to have the video streamed with audio.
 \end{itemize}
 
 Those were the features which we finally decided to add to our software and project. 
@@ -94,20 +97,35 @@ The GUI, class \texttt{ClientGUI} is responsible for everything that happens wit
 The main method for the client is to be found in the class \texttt{Client}. 
 \subsection{Library}
 %Här beskriver vi xuggle lite kortfattat, lägg gärna till referenser. Problemen med xuggle tykcer jag vi tar i diskussionen
-
+For the encoding library we found a library, which suited our needs, called \emph{Xuggler\footnote{For more specific information: http://www.xuggle.com/xuggler}}. Xuggler is a library which uses the free software project, FFmpeg, to encode and decode all kinds of video files. We chose Xuggler since it had a quite easy API and the methods used suited our solution with the live streaming of a video over a network. Xuggler also spoke to us since we were able to get some example code and get to know the way the library is built up. 
 \section{User Guide}
 %manual
+For the user manual, please refer to our project website, \href{http://users.student.lth.se/dat11ama/hemsida/styled-2/styled-5/}{press here}\footnote{If not reading on a computer: http://users.student.lth.se/dat11ama/hemsida/styled-2/styled-5/}.
 
 \section{Evaluation/Discussion}
 %kolla rapportgrejsen som jag lÃ¤nkat till: http://fileadmin.cs.lth.se/cs/Education/EDA095/2010/projektrapport.pdf
+With the finished software we actually accomplished more then we thought, since the main part to be able to actually only stream video. We did manage to actually get both the video and the audio working, and at the same time being synchronized. The GUI was meant to be quite straight forward, but since we did get a tip of a software from our mentor, we actually made it much more nicer then what we thought of how it would be. Hence, in other words, our requirements were reached. There is a maybe that because of this software from our mentor, the GUI class contains every part of the GUI. For the complexity of a class this could become a handfull if the class grows, hence, a different design approach with different separated classes would be a good idea for us. 
+
+Having this said, what could be changed with our project. Firstly, since we now use our own protocol and GUI, there is no room for us to extract the server and letting it connect to a media player of ones choice, since they use the standard protocol RTP and RTSP. This is something we could have worked with, but the majority of this transformation is to big and complex for it to be worth to do. Most of our design would have to change and it would probably be easier to start with a new project. 
+
+Another thing which could have be done in another way for the project was the fact that we chose a rather unknown for us library, Xuggler. Xuggler from day one had us corned and we spent endless hours to just getting it work on our computers. When we finally did get it working, the struggle now was how to extract the samples from the decoder. It was a kind of black box scenario that we inserted a video file, got it to play locally but did not know how in the world it could be received out of the encoder. Another couple of hours spent on reading and searching for information before we did get everything we needed. Needles to say, Xuggler is actually pretty good when you get it to work, however, with the lack of documentation it could become a headache for the developer. Those hours we spent on researching and almost giving up the idea of the video streaming project could we have spent much more productive. 
+
+However, in the larger scale, we are very pleased with what we have accomplished during this course. There is not much we would have changed, but if we had to do this again, we would know more and maybe could build something more complex with some other functionality. The course and project is very appealing to the education, since it contains both programming, documentation and the chance to explore our imagination. There is not much more to change, the mentor we had gave us input and we could use him as an idea wall were we would together as a group come up with ideas and decision. 
 \section{Source Code}
 %Vi beskriver bara hur källkoden är organiserad, för mycket att inkludera allt
+The source code is divided into three packages, as shown in the list below. However, for download please refer to our project website, \href{http://users.student.lth.se/dat11ama/hemsida/downloads/}{press here}\footnote{If not reading on a computer: http://users.student.lth.se/dat11ama/hemsida/downloads/}. For the overall design description, please refer to Section 4 in this paper. 
+
+\begin{itemize}
+\item \texttt{WeezelTV.common}. This package contains the protocol and the common shared files with the overall system.
+\item \texttt{WeezelTV.client}. This package contains the classes for the client, GUI etc.
+\item \texttt{WeezelTV.server}. This package contains the classes for the server. 
+\end{itemize}
 
 
 
 
-\begin{thebibliography}{1}
-\bibitem{wikipedia}
-http://en.wikipedia.org
-\end{thebibliography}
+%\begin{thebibliography}{1}
+%\bibitem{wikipedia}
+%http://en.wikipedia.org
+%\end{thebibliography}
 \end{document}
