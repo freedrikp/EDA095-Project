@@ -3,7 +3,7 @@
 \usepackage[english]{babel}
 \usepackage{moreverb}
 \usepackage{graphicx}
-\title{Project Report \\ EDA095 Network Programming}
+\title{Project Report for WeezelTV\\ EDA095 Network Programming}
 \date{\today}
 \author{Fredrik Paulsson \\ dat11fp1@student.lu.se \and Jonas Jacobsson \\ dat11jja@student.lu.se \and Artur Matulaniec \\ dat11ama@student.lu.se \and Magnus T√∂rnquist \\ ada08mto@student.lu.se}
 %\setcounter{secnumdepth}{5}
@@ -12,6 +12,7 @@
 \maketitle
 %\tableofcontents
 
+\newpage
 \section{Introduction}
 The project in this course did not contain a specific task that was to be done. Rather the only demand was that the content of the course was to be of central focus in the project.
 
@@ -39,30 +40,68 @@ When we were taking a look at the RFC for RTP Payload Format for JPEG-compressed
 This code is still available but we decided not to include it here since it's irrelevant to the rest of the project. 
 
 \section{Features/Requirements}
-When we began our project we did set quite straight forward requirements regarding what we wanted our software to handle. To begin with we did some research and thought of using an already implemented protocol in order to be able to use standard software regarding the video showing. 
+When we began our project we did set quite straight forward requirements regarding what we wanted our software to handle. To begin with we did some research and thought of using an already implemented protocol in order to be able to use standard software regarding the video showing, as mentioned before. Hence, the main objective of our software was that we would implement a server, a client and be able to connect to that server, preferably with more than one client at a time, and stream video to it/them in real time. Along the way, however, more features came to our minds and we did found ourselves having requirements as show in the list below.
+
+\begin{itemize}
+\item A server with some videos and being able to handle more than one client at a time.
+\item A client with our own GUI.
+\item The possibility of choosing a video to stream.
+\item Being able to play and pause, both the stream and the video.
+\item To have the video streamed with audio.
+\item Building our own protocol in order to minimize the complexity of the software. 
+\end{itemize}
+
+Those were the features which we finally decided to add to our software and project. 
+
 
 \section{Structure/Model}
-Our solution consists of two parts, a server and a client. These are two independent programs that communicates using a protocol that we have oursleves defined. The communication uses a TCP connection.
+Our solution consists of two parts, a server and a client. These are two independent programs that communicates using a protocol that we personally defined. The underlying transport protocol is, however, regular TCP. Since we have two different independent programs we will divide this section in order to describe each and one of them more specifically. There is also a common packet shared by the two programs in order for them to be able to communicate. 
 
-\subsection{Library}
-H√§r beskriver vi xuggle lite kortfattat, l√§gg g√§rna till referenser. Problemen med xuggle tykcer jag vi tar i diskussionen
+\subsection{Common}
+Under this packet we have both the protocol and the common configuration file, which is use to maintain all the parameters into the program. The protocol consists of a couple of bytes which are sent over the network to one of the entities in order to perform commands from one entity to the other. Under this common packet we also have the two buffer element types, 
+\begin{itemize}
+\item \texttt{AudioBufferElement}
+\item \texttt{ImageBufferElement}
+\end{itemize}
 
-\subsection{Client}
-Viktigaste klasser och annat tekniskt hur klienten fungerar
+which describes the elements of both the video and audio in order to send them over the network. As well as their structure is considered crucial in order to maintain the synchronization between the two parts when streaming video over the network. 
+
+\subsubsection{Protocol}
+Since this project is about network programming some information about the protocol could be explained. Our protocol uses regular bytes as the data to be sent, since then there is no need for converting any other data type. We have divided it into two parts, 
+
+\begin{enumerate} 
+\item Server to client commands
+\item Client to server commands
+\end{enumerate}
+
+to be able to divide the communication, and also for the ease of adding new commands throughout. 
 
 \subsection{Server}
-samma h√§r fast f√∂r servern
+The server is divided into different classes for the maintainability of the server. However, the most important part is the \texttt{ServerSender} class. This class is the class which sends the data over the network, for both image and audio samples. This is the monitor shared by the two threads, \texttt{ImageSender} and \texttt{AudioSender}, which are responsible to provide the monitor with samples to be sent to a connected client. 
 
-\subsection{Protocol}
-beskrivning av protokollet
+The server also has a buffer, the class \texttt{ServerBuffer}, which holds the samples. The common structure for the buffers is that they both use LinkedList as the data container. The class \texttt{ServerListener} is a class which encodes the file found on the server into the two common shared data structures mentioned above. This class is responsible to provide the buffer with the samples in order for the two senders, \texttt{ImageSender} and \texttt{AudioSender} to be able to send the information to the \texttt{ServerSender} and next out on the network.
+
+To be able to read any commands sent from the client, the thread \texttt{ServerReceiver} is running and reading the bytes sent from the client. Based on which command is being sent, it performs different action on the buffer and in that way the server is controlled by the client. 
+
+The main method of the server is to be found in the class \texttt{Server}.   
+\subsection{Client}
+The client is also divided into a couple of classes for the maintainability of the software. The most important part of the client is the thread \texttt{ClientReceiver}. The thread is responsible to receive the sent information from the server and sends it into the clients buffer, class \texttt{ClientBuffer}. The buffer then works as a monitor for the rest of the client, since all the other threads also uses it to receive information and show it onto the GUI. As in the server, the buffer uses LinkedList as the data container and there are two, one for each of the common shared data elements. 
+
+Another important part of the client is the two threads, \texttt{ClientImageViewer} and \texttt{ClientSoundPlayer}. Those threads are responsible for the synchronization between the video and the audio. The \texttt{ClientImageViewer} is also responsible to add image samples into the GUI in order to show the video stream. 
+
+The GUI, class \texttt{ClientGUI} is responsible for everything that happens with the end user. The GUI takes use of the monitor, \texttt{ClientSender}, to be able to send commands to the server from the client. The \texttt{ClientSender} is responsible to maintain the connection with the \texttt{ServerReceiver} in order for the end user to send commands from the client to the server. 
+
+The main method for the client is to be found in the class \texttt{Client}. 
+\subsection{Library}
+%H‰r beskriver vi xuggle lite kortfattat, l‰gg g‰rna till referenser. Problemen med xuggle tykcer jag vi tar i diskussionen
 
 \section{User Guide}
-manual
+%manual
 
 \section{Evaluation/Discussion}
-kolla rapportgrejsen som jag l√§nkat till: http://fileadmin.cs.lth.se/cs/Education/EDA095/2010/projektrapport.pdf
+%kolla rapportgrejsen som jag l√§nkat till: http://fileadmin.cs.lth.se/cs/Education/EDA095/2010/projektrapport.pdf
 \section{Source Code}
-Vi beskriver bara hur k√§llkoden √§r organiserad, f√∂r mycket att inkludera allt
+%Vi beskriver bara hur k‰llkoden ‰r organiserad, fˆr mycket att inkludera allt
 
 
 
