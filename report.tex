@@ -21,8 +21,22 @@ However, later on we decided to skip these existing protocols and implement our 
 
 This report will serve as documentation of our project work.
 
-\section{Implementing a server using RTSP}
-Här förklarar vi varför vi bytte fokus till att göra vår egen lösning...
+\section{Implementing a server using RTP/RTSP}
+As mentioned in the introduction we started off the project by trying to implement a RTP/RTSP server hoping to be able to stream to VLC. 
+Some sample code was provided to us containing a server and client using a very simplified version of RTP/RTSP. The server used RTSP to setup the connection with the client then created byte arrays of jpeg images from a file in the mjpeg format.
+This code was our main foundation for trying to build a RTP server capable of streaming to VLC instead of the provided client. Unfortunately it turned out that there were many obstacles in the way.
+First we encountered several small problems, for example the sample code did not use EOL properly and thus VLC didn't know the server had finished sending an RTSP packet. Another example is that the server wanted responses to look in particular way and couldn't understand what VLC was sending.
+A third example is that VLC wanted to decide the client port in the SETUP method and thus we had to extract that and use the port in the connection.
+These problems were rather easily fixed. Then came a slightly bigger problem: It turned out that VLC required the RTSP method "DESCRIBE" to be used even though the RFC for RTSP states that it's only a recommended method  (https://www.ietf.org/rfc/rfc2326.txt).
+Implementing a DESCRIBE method that was fully functional in all cases would be tricky (see section 10.2 in the RFC), so we decided to focus on giving VLC the correct information for that particular mjpeg file. 
+When this was done VLC was finally satisfied and a connection was established, but for some reason no packets were being received on the clients end. It was just waiting until it timed out.
+We fired up Wireshark to analyze what had gone wrong and saw plenty of packets that Wireshark did not recognize. After further inspection we realized that those were our RTP packets but with an incorrect header.
+The RTP sample code had completely skipped the beginning of the header that includes important things like padding and payload type. So we figured out what we wanted the header to be and manually set the beginning of the header to [10000000] (see https://www.ietf.org/rfc/rfc3550.txt for details) and payload type 26 (mjpeg).
+Now VLC was finally receiving the packets, recognizing them as RTP packets with an mjpeg payload and handed of the decoding procedure to the open source library "LIVE555".
+LIVE555 failed to decode the packets. This was when we started to run of patience. It turned out that when sending mjpeg via RTP it requires a special header on all jpeg images. 
+When we were taking a look at the RFC for RTP Payload Format for JPEG-compressed Video (found here: https://tools.ietf.org/html/rfc2435) we realized that we had bitten of more than we could chew and decided to scrap this whole approach.
+
+This code is still available but we decided not to include it here since it's irrelevant to the rest of the project. 
 
 \section{Features/Requirements}
 Vilka krav vi har och/eller features
