@@ -17,8 +17,8 @@ public class Configuration {
 	public static float SERVER_COMPRESSION_QUALITY = 0.3f;
 	public static String SERVER_MEDIA_DIRECTORY = "media";
 	public static int SERVER_BUFFER_SIZE = 100;
-	public static long SERVER_WAIT_TIME = 100;
-	public static int SERVER_BLOCK_SIZE = 50;
+	public static long SERVER_WAIT_TIME = 0;
+	public static int SERVER_BLOCK_SIZE = 0;
 
 	public static void loadConfiguration(String file){
 		try {

@@ -21,6 +21,13 @@ public class ServerBuffer {
 	}
 
 	public synchronized void addImage(ImageBufferElement image) {
+		while (images.size() > Configuration.SERVER_BUFFER_SIZE) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		images.add(image);
 		notifyAll();
 	}
@@ -33,6 +40,8 @@ public class ServerBuffer {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("Buffer size: " + images.size());
+		notifyAll();
 		return images.poll();
 	}
 
@@ -113,16 +122,6 @@ public class ServerBuffer {
 			return true;
 		} else {
 			return false;
-		}
-	}
-
-	public synchronized void waitForBuffer() {
-		while (images.size() > Configuration.SERVER_BUFFER_SIZE) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }
