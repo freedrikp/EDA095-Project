@@ -102,9 +102,75 @@ The main method for the client is to be found in the class \texttt{Client}.
 \subsection{Library}
 %H‰r beskriver vi xuggle lite kortfattat, l‰gg g‰rna till referenser. Problemen med xuggle tykcer jag vi tar i diskussionen
 For the encoding library we found a library, which suited our needs, called \emph{Xuggler\footnote{For more specific information: http://www.xuggle.com/xuggler}}. Xuggler is a library which uses the free software project, FFmpeg, to encode and decode all kinds of video files. We chose Xuggler since it had a quite easy API and the methods used suited our solution with the live streaming of a video over a network. Xuggler also spoke to us since we were able to get some example code and get to know the way the library is built up. 
+
+\clearpage
 \section{User Guide}
 %manual
-For the user manual, please refer to our project website, \href{http://users.student.lth.se/dat11ama/hemsida/styled-2/styled-5/}{press here}\footnote{If not reading on a computer: http://users.student.lth.se/dat11ama/hemsida/styled-2/styled-5/}.
+\subsection{Configuration}
+
+\begin{itemize}
+  \item To configure the program you first need to locate the config file and open it with a text editing program.
+  \item When it is open you can change the following settings how you please to have them for an optimal viewing experience:
+
+\begin{itemize}
+  \item COM\_PORT (The port that should be used by the program)
+  \item CLIENT\_BUFFER\_SIZE (Size of the image buffer for the client)
+  \item CLIENT\_HOST (The address to the host of the client)
+  \item SERVER\_COMPRESSION\_QUALITY (How much the server should compress the images before sending them)
+  \item SERVER\_MEDIA\_DIRECTORY (The path to the media files)
+  \item SERVER\_BUFFER\_SIZE (Size of the image buffer for the server)
+  \item SERVER\_WAIT\_TIME (Wait time for the server)
+  \item SERVER\_BLOCK\_SIZE ()
+\end{itemize}
+\end{itemize}
+
+\subsection{Starting the program}
+\begin{itemize}
+  \item To start the program, first need to execute the \emph{server.jar}.
+  \item Then you need to execute the \emph{client.jar}.
+  \item When \emph{client.jar} is running, there will appear a application window.
+  \item Now the program is started.
+\end{itemize}
+
+\subsection{Starting a movie}
+\begin{itemize}
+  \item To start a movie, first the program first need to be started.
+  \item In the application window, click on the tab \emph{Select Panel}.
+  \item In this panel a list of the movies available will be shown. Choose a movie by clicking on it.
+  \item Then click \emph{Select} to verify your choice.
+  \item Click on the tab \emph{Movie Panel} to get back to the movie screen.
+  \item Here you first need to start the movie stream to the client by clicking on \emph{Start stream}.
+  \item Now the movie is streaming to your computer and will start when the buffering is complete.
+\end{itemize}
+
+\subsection{Pausing and starting the movie stream}
+\begin{itemize}
+  \item While a movie is playing you can pause the movie stream at any point just by clicking on the button \emph{Pause stream}.
+  \item You can notice that the number of frames and audio samples will decrease, because the client do not receive new ones anymore.
+  \item To start the movie stream again you need to click on the button \emph{Start stream}, and the frames and audio samples will start to increase again.
+\end{itemize}
+
+\subsection{Set movie to pause/play}
+\begin{itemize}
+  \item While a movie is playing you can click the button \emph{Pause}, or click the movie screen, to pause the movie.
+  \item Now the movie is paused. To start playing it again you just need to click the button \emph{Play}, or click the movie screen.
+\end{itemize}
+
+\subsection{Switch between default and fullscreen mode}
+\begin{itemize}
+  \item While a movie is playing, or is paused, you can set the application window to a fullscreen mode by double clicking on the movie screen.
+  \item Now the application window will adjust itself to your computer screen.
+  \item To get back to the default mode you just need to double click on the movie screen again.
+\end{itemize}
+
+\subsection{Closing}
+\begin{itemize}
+  \item In any time you would like to exit the program, you just need to go to the tab \emph{Main Panel}.
+  \item In the \emph{Main Panel}, click on the button \emph{Exit}.
+  \item The program will close.
+\end{itemize}
+
+%For the user manual, please refer to our project website, \href{http://users.student.lth.se/dat11ama/hemsida/styled-2/styled-5/}{press here}\footnote{If not reading on a computer: http://users.student.lth.se/dat11ama/hemsida/styled-2/styled-5/}.
 
 \section{Evaluation/Discussion}
 %kolla rapportgrejsen som jag l√§nkat till: http://fileadmin.cs.lth.se/cs/Education/EDA095/2010/projektrapport.pdf
