@@ -40,7 +40,6 @@ public class ServerBuffer {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Buffer size: " + images.size());
 		notifyAll();
 		return images.poll();
 	}
