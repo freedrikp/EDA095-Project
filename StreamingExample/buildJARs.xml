@@ -9,7 +9,7 @@
     <target name="create_run_server_jar">
         <jar destfile="server.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="SimpleExample.server.Server"/>
+                <attribute name="Main-Class" value="WeezelTV.server.Server"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="bin"/>
@@ -55,7 +55,7 @@
      <target name="create_run_client_jar">
         <jar destfile="client.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="SimpleExample.client.Client"/>
+                <attribute name="Main-Class" value="WeezelTV.client.Client"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="bin"/>
